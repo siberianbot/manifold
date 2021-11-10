@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://siberianbot.me/manifold/schema",
+
+  "title": "Manifold Document",
+  "description": "Manifold document schema",
+  "type": "object",
+
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/project",
+          "description": "Project definition"
+        }
+      },
+      "required": ["project"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "workspace": {
+          "$ref": "#/$defs/workspace",
+          "description": "Workspace definition"
+        }
+      },
+      "required": ["workspace"],
+      "additionalProperties": false
+    }
+  ],
+
+  "$defs": {
+    "name": {
+      "type": "string",
+      "pattern": "[a-zA-Z0-9\\-_.]+"
+    },
+
+    "include": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/name",
+          "description": "A well-known name of project, which can be used as display name or as name of dependency"
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "Project dependencies, which could be defined within workspace or located somewhere outside of project directory",
+          "items": {
+            "type": "object",
+            "$ref": "#/$defs/dependency"
+          },
+          "uniqueItems": true
+        },
+        "steps": {
+          "type": "array",
+          "description": "Collection of steps which should be executed by Manifold",
+          "items": {
+            "type": "object",
+            "$ref": "#/$defs/step"
+          }
+        }
+      },
+      "required": ["name"]
+    },
+
+    "workspace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/name",
+          "description": "A well-known name of workspace, which can be used as display name or as name of dependency"
+        },
+        "includes": {
+          "type": "array",
+          "description": "Collection of projects or workspaces which are the parts of this workspace",
+          "items": {
+            "type": "string",
+            "$ref": "#/$defs/include"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": ["name"]
+    },
+
+    "dependency": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/$defs/workspaceDependency" },
+        { "$ref": "#/$defs/pathDependency" }
+      ]
+    },
+
+    "workspaceDependency": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/name",
+          "description": "A name of dependent project, included in workspace"
+        }
+      },
+      "required": ["project"]
+    },
+
+    "pathDependency": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "A path to dependent project, located somewhere outside of project directory"
+        }
+      },
+      "required": ["path"]
+    },
+
+    "step": {
+      "type": "object",
+      "oneOf": [{ "$ref": "#/$defs/cmdStep" }],
+
+      "properties": {
+        "stage": {
+          "type": "string",
+          "description": "A name of execution stage"
+        }
+      }
+    },
+
+    "cmdStep": {
+      "type": "object",
+      "properties": {
+        "cmd": {
+          "type": "string",
+          "description": "Command for execution via command line"
+        }
+      },
+      "required": ["cmd"]
+    }
+  }
+}

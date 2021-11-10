@@ -1,0 +1,4 @@
+project:
+  name: CmdOnlyProject
+  steps:
+    - cmd: echo "Hello, World!"
