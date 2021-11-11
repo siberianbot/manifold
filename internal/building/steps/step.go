@@ -1,4 +1,4 @@
-package building_steps
+package steps
 
 type StepKind int32
 

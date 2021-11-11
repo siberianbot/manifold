@@ -1,7 +1,7 @@
-package building_steps
+package steps
 
 import (
-	"manifold/internal/building_steps"
+	"manifold/internal/building/steps"
 	dd "manifold/internal/document_definition"
 	"manifold/test"
 	"testing"
@@ -13,7 +13,7 @@ func TestCommandStepFactory(t *testing.T) {
 			Command: "",
 		}
 
-		step, err := building_steps.FromStepDefinition(&stepDefinition)
+		step, err := steps.FromStepDefinition(&stepDefinition)
 
 		test.AssertNil(t, step)
 		test.AssertNotNil(t, err)
@@ -25,11 +25,11 @@ func TestCommandStepFactory(t *testing.T) {
 			Command: command,
 		}
 
-		step, err := building_steps.FromStepDefinition(&stepDefinition)
+		step, err := steps.FromStepDefinition(&stepDefinition)
 
 		test.AssertNil(t, err)
 		test.Assert(t, step != nil)
-		test.Assert(t, step.Kind() == building_steps.CommandStepKind)
-		test.Assert(t, step.(building_steps.CommandStep).Command == command)
+		test.Assert(t, step.Kind() == steps.CommandStepKind)
+		test.Assert(t, step.(steps.CommandStep).Command == command)
 	})
 }
