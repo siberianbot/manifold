@@ -15,6 +15,7 @@ func AssertNil(t *testing.T, v interface{}) {
 	}
 }
 
+//AssertNotNil is obsolete
 func AssertNotNil(t *testing.T, v interface{}) {
 	if v == nil {
 		t.Error()
