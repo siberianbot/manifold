@@ -1,8 +1,8 @@
-package document
+package document_definition
 
 import (
 	"bytes"
-	"manifold/internal/document"
+	"manifold/internal/document_definition"
 	"manifold/test"
 	"math/rand"
 	"strings"
@@ -12,7 +12,7 @@ import (
 func TestRead(t *testing.T) {
 	t.Run("EmptyFile", func(t *testing.T) {
 		reader := strings.NewReader("")
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNil(t, doc)
 		test.AssertNotNil(t, err)
@@ -23,7 +23,7 @@ func TestRead(t *testing.T) {
 		rand.Read(data)
 
 		reader := bytes.NewReader(data)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNil(t, doc)
 		test.AssertNotNil(t, err)
@@ -33,7 +33,7 @@ func TestRead(t *testing.T) {
 		yaml := `project:`
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
@@ -46,7 +46,7 @@ project:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
@@ -69,7 +69,7 @@ project:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
@@ -88,7 +88,7 @@ project:
 		yaml := `workspace:`
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
@@ -101,7 +101,7 @@ workspace:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
@@ -121,7 +121,7 @@ workspace:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document.Read(reader)
+		doc, err := document_definition.Read(reader)
 
 		test.AssertNotNil(t, doc)
 		test.AssertNil(t, err)
