@@ -13,7 +13,7 @@ func (step CommandStep) Kind() StepKind {
 	return CommandStepKind
 }
 
-func (step CommandStep) Execute() (bool, error) {
+func (step CommandStep) Execute() error {
 	// TODO:
 	// 1. remove usage of Windows' cmd - it is not cross-platform
 	// 2. interpret command as command block or script
@@ -24,5 +24,5 @@ func (step CommandStep) Execute() (bool, error) {
 	cmd.Args = append(cmd.Args, cmdSplit...)
 	cmdErr := cmd.Run()
 
-	return cmdErr == nil, cmdErr
+	return cmdErr
 }

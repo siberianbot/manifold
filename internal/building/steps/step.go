@@ -9,5 +9,5 @@ const (
 
 type Step interface {
 	Kind() StepKind
-	Execute() (bool, error)
+	Execute() error
 }
