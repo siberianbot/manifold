@@ -14,8 +14,8 @@ func TestRead(t *testing.T) {
 		reader := strings.NewReader("")
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNil(t, doc)
-		test.AssertNotNil(t, err)
+		test.Assert(t, doc == nil)
+		test.Assert(t, err != nil)
 	})
 
 	t.Run("RandomFile", func(t *testing.T) {
@@ -25,8 +25,8 @@ func TestRead(t *testing.T) {
 		reader := bytes.NewReader(data)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNil(t, doc)
-		test.AssertNotNil(t, err)
+		test.Assert(t, doc == nil)
+		test.Assert(t, err != nil)
 	})
 
 	t.Run("EmptyProjectOnly", func(t *testing.T) {
@@ -35,8 +35,8 @@ func TestRead(t *testing.T) {
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 	})
 
 	t.Run("ProjectWithName", func(t *testing.T) {
@@ -48,10 +48,10 @@ project:
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 
-		test.AssertNotNil(t, doc.Project)
+		test.Assert(t, doc.Project != nil)
 		test.Assert(t, doc.Project.Name == "foo")
 	})
 
@@ -71,16 +71,16 @@ project:
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 
-		test.AssertNotNil(t, doc.Project)
+		test.Assert(t, doc.Project != nil)
 		test.Assert(t, doc.Project.Name == "foo")
 
 		// TODO: assert items of both slices
-		test.AssertNotNil(t, doc.Project.Dependencies)
+		test.Assert(t, doc.Project.Dependencies != nil)
 		test.Assert(t, len(doc.Project.Dependencies) > 0)
-		test.AssertNotNil(t, doc.Project.Steps)
+		test.Assert(t, doc.Project.Steps != nil)
 		test.Assert(t, len(doc.Project.Steps) > 0)
 	})
 
@@ -90,8 +90,8 @@ project:
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 	})
 
 	t.Run("WorkspaceWithName", func(t *testing.T) {
@@ -103,10 +103,10 @@ workspace:
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 
-		test.AssertNotNil(t, doc.Workspace)
+		test.Assert(t, doc.Workspace != nil)
 		test.Assert(t, doc.Workspace.Name == "foo")
 	})
 
@@ -123,14 +123,14 @@ workspace:
 		reader := strings.NewReader(yaml)
 		doc, err := document_definition.Read(reader)
 
-		test.AssertNotNil(t, doc)
-		test.AssertNil(t, err)
+		test.Assert(t, doc != nil)
+		test.Assert(t, err == nil)
 
-		test.AssertNotNil(t, doc.Workspace)
+		test.Assert(t, doc.Workspace != nil)
 		test.Assert(t, doc.Workspace.Name == "foo")
 
 		// TODO: assert items of slice
-		test.AssertNotNil(t, doc.Workspace.Includes)
+		test.Assert(t, doc.Workspace.Includes != nil)
 		test.Assert(t, len(doc.Workspace.Includes) > 0)
 
 	})

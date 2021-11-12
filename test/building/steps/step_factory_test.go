@@ -15,8 +15,8 @@ func TestCommandStepFactory(t *testing.T) {
 
 		step, err := steps.FromStepDefinition(&stepDefinition)
 
-		test.AssertNil(t, step)
-		test.AssertNotNil(t, err)
+		test.Assert(t, step == nil)
+		test.Assert(t, err != nil)
 	})
 
 	t.Run("NotEmptyCmd", func(t *testing.T) {
@@ -27,7 +27,7 @@ func TestCommandStepFactory(t *testing.T) {
 
 		step, err := steps.FromStepDefinition(&stepDefinition)
 
-		test.AssertNil(t, err)
+		test.Assert(t, err == nil)
 		test.Assert(t, step != nil)
 		test.Assert(t, step.Kind() == steps.CommandStepKind)
 		test.Assert(t, step.(steps.CommandStep).Command == command)
