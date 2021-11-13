@@ -1,4 +1,4 @@
-package building
+package test
 
 type FakeTraverseContext struct {
 	Errors   []string

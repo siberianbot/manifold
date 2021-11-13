@@ -1,6 +1,8 @@
 package build_info
 
-import "manifold/internal/building/steps"
+import (
+	"manifold/internal/steps"
+)
 
 type ProjectBuildInfo struct {
 	name string
