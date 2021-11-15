@@ -1,4 +1,4 @@
-package traversing_test
+package test
 
 import "fmt"
 

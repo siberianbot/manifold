@@ -9,7 +9,7 @@ type CommandStep struct {
 	Command string
 }
 
-func (step CommandStep) Kind() StepKind {
+func (CommandStep) Kind() StepKind {
 	return CommandStepKind
 }
 

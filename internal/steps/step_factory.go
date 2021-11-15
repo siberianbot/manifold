@@ -2,23 +2,23 @@ package steps
 
 import (
 	dd "manifold/internal/document_definition"
-	"manifold/internal/traversing"
+	"manifold/internal/validation"
 )
 
-func FromStepDefinition(stepDefinition *dd.StepDefinition, ctx traversing.TraverseContext) Step {
-	// TODO: handle different definitions here
-	return fromCmdStepDefinition(stepDefinition, ctx)
-}
+func FromStepDefinition(stepDefinition dd.StepDefinition, ctx validation.Context) Step {
+	// TODO: change a way of definition of step
+	switch {
+	case stepDefinition.Command != "":
+		return fromCmdStepDefinition(stepDefinition, ctx)
 
-func fromCmdStepDefinition(stepDefinition *dd.StepDefinition, ctx traversing.TraverseContext) Step {
-	if stepDefinition.Command == "" {
-		ctx.AddError("step cmd does not have any command to execute")
+	default:
+		ctx.AddError(validation.StepNotMatch)
 		return nil
 	}
+}
 
-	step := CommandStep{
+func fromCmdStepDefinition(stepDefinition dd.StepDefinition, _ validation.Context) Step {
+	return CommandStep{
 		Command: stepDefinition.Command,
 	}
-
-	return step
 }
