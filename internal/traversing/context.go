@@ -2,8 +2,8 @@ package traversing
 
 import "manifold/internal/validation"
 
-type TraverseContext interface {
-	validation.ValidationContext
+type Context interface {
+	validation.Context
 
 	CurrentFile() string
 }
