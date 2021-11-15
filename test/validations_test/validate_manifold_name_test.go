@@ -51,5 +51,5 @@ func TestManifoldNameValidation(t *testing.T) {
 }
 
 func generateInvalidManifoldNameMsg(name string) string {
-	return fmt.Sprintf(validation.InvalidManifoldName, name, "^[a-zA-Z0-9\\-_.]+$")
+	return fmt.Sprintf(validation.InvalidManifoldName, name, validation.NameRegexPattern)
 }

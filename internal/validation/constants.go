@@ -1,5 +1,5 @@
 package validation
 
 const (
-	nameRegexPattern = "^[a-zA-Z0-9\\-_.]+$"
+	NameRegexPattern = "^[a-zA-Z0-9\\-_.]+$"
 )

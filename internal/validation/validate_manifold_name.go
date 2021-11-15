@@ -7,7 +7,7 @@ import (
 )
 
 func newNameRegexp() *regexp.Regexp {
-	r, err := regexp.Compile(nameRegexPattern)
+	r, err := regexp.Compile(NameRegexPattern)
 
 	if err != nil {
 		panic(err)
