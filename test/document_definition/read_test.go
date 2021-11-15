@@ -132,6 +132,5 @@ workspace:
 		// TODO: assert items of slice
 		test.Assert(t, doc.Workspace.Includes != nil)
 		test.Assert(t, len(doc.Workspace.Includes) > 0)
-
 	})
 }

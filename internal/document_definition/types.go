@@ -12,8 +12,8 @@ type ProjectDefinition struct {
 }
 
 type WorkspaceDefinition struct {
-	Name     string   `yaml:"name"`
-	Includes []string `yaml:"includes"`
+	Name     string              `yaml:"name"`
+	Includes []IncludeDefinition `yaml:"includes"`
 }
 
 type DependencyDefinition struct {
@@ -24,3 +24,4 @@ type DependencyDefinition struct {
 type StepDefinition struct {
 	Command string `yaml:"cmd"`
 }
+type IncludeDefinition string
