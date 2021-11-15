@@ -19,6 +19,10 @@ func newNameRegexp() *regexp.Regexp {
 var nameRegexp = newNameRegexp()
 
 func ValidateManifoldName(name string) error {
+	if name == "" {
+		return errors.New(EmptyManifoldName)
+	}
+
 	if !nameRegexp.MatchString(name) {
 		return errors.New(fmt.Sprintf(InvalidManifoldName, name, nameRegexp))
 	}

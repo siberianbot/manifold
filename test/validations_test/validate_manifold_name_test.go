@@ -28,7 +28,7 @@ func TestManifoldNameValidation(t *testing.T) {
 
 	t.Run("EmptyName", func(t *testing.T) {
 		name := ""
-		expectedErrMsg := generateInvalidManifoldNameMsg(name)
+		expectedErrMsg := validation.EmptyManifoldName
 
 		err := validation.ValidateManifoldName(name)
 
