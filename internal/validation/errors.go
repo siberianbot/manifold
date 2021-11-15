@@ -11,4 +11,10 @@ const (
 	InvalidDependentProject          = "invalid dependent project: %v"
 
 	StepNotMatch = "step does not matches any known toolchain"
+
+	EmptyDocument                       = "document is empty"
+	DocumentWithBothProjectAndWorkspace = "document contains both definitions of project and workspace"
+
+	InvalidProject   = "invalid project: %v"
+	InvalidWorkspace = "invalid workspace: %v"
 )

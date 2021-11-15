@@ -1,5 +1,7 @@
 package document_definition
 
+// TODO: this types should implement some interface for validation (i.e. Validatable with Validate(ctx) method)
+
 type DocumentDefinition struct {
 	Project   *ProjectDefinition   `yaml:"project"`
 	Workspace *WorkspaceDefinition `yaml:"workspace"`
