@@ -1,12 +1,38 @@
 package test
 
 import (
+	"os"
+	"path/filepath"
 	"runtime/debug"
 	"testing"
 )
 
 func Assert(t *testing.T, condition bool) {
 	if !condition {
-		t.Error(string(debug.Stack()))
+		t.Fatal(string(debug.Stack()))
+	}
+}
+
+func CreateFile(t *testing.T, path string, content string) {
+	dir := filepath.Dir(path)
+	err := os.MkdirAll(dir, os.ModeDir)
+
+	if err != nil {
+		t.Fatalf("failed to create %s: %v", dir, err)
+	}
+
+	file, err := os.Create(path)
+
+	if err != nil {
+		t.Fatalf("failed to create %s: %v", path, err)
+	}
+
+	//goland:noinspection GoUnhandledErrorResult
+	defer file.Close()
+
+	_, err = file.WriteString(content)
+
+	if err != nil {
+		t.Fatalf("failed to write content into %s: %v", path, err)
 	}
 }
