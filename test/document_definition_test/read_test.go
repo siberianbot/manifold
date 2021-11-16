@@ -1,4 +1,4 @@
-package document_definition
+package document_definition_test
 
 import (
 	"bytes"
