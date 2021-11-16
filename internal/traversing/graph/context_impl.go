@@ -8,8 +8,6 @@ type contextImpl struct {
 
 	path string
 	dir  string
-
-	parentContext *contextImpl
 }
 
 func (ctx *contextImpl) AddError(message string, params ...interface{}) {
@@ -36,7 +34,7 @@ func (ctx contextImpl) CurrentFile() string {
 	return ctx.path
 }
 
-func newContext(path string, parentCtx *contextImpl) (ctx *contextImpl, err error) {
+func newContext(path string) (ctx *contextImpl, err error) {
 	absPath, absDir, err := processPath(path)
 
 	if err != nil {
@@ -48,7 +46,6 @@ func newContext(path string, parentCtx *contextImpl) (ctx *contextImpl, err erro
 	ctx.warnings = make([]string, 0)
 	ctx.path = absPath
 	ctx.dir = absDir
-	ctx.parentContext = parentCtx
 
 	return ctx, nil
 }
