@@ -25,6 +25,11 @@ func FromDependencyDefinition(definition document_definition.DependencyDefinitio
 }
 
 func FromIncludeDefinition(definition document_definition.IncludeDefinition, ctx traversing.Context) DependentInfo {
+	if definition == "" {
+		ctx.AddError(validation.EmptyWorkspaceInclude)
+		return nil
+	}
+
 	pathStr := string(definition)
 
 	return newDependentPath(pathStr, ctx)

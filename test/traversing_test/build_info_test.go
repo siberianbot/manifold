@@ -7,8 +7,7 @@ import (
 	"manifold/internal/traversing/dependents"
 	"manifold/internal/validation"
 	"manifold/test"
-	"os"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -216,10 +215,16 @@ func TestBuildInfoFactory(t *testing.T) {
 		})
 
 		t.Run("WithIncludes", func(t *testing.T) {
-			ctx := test.NewFakeContext()
-			ctx.File = "foo"
+			testDir := t.TempDir()
 
-			include := path.Join(t.TempDir(), "bar")
+			ctx := test.NewFakeContext()
+			ctx.File = filepath.Join(testDir, "foo", ".manifold.yml")
+			test.CreateFile(t, ctx.File, "")
+
+			include := "bar"
+			includePath := filepath.Join(testDir, "foo", include)
+			test.CreateDir(t, includePath)
+
 			workspace := document_definition.WorkspaceDefinition{
 				Name:     "foo",
 				Includes: []document_definition.IncludeDefinition{document_definition.IncludeDefinition(include)},
@@ -228,18 +233,10 @@ func TestBuildInfoFactory(t *testing.T) {
 				Workspace: &workspace,
 			}
 
-			file, err := os.Create(include)
-
-			if err != nil {
-				t.Fatal(err)
-				return
-			} else {
-				_ = file.Close()
-
-				defer func() { _ = os.Remove(include) }()
-			}
-
 			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+
+			test.Assert(t, len(ctx.Errors) == 0)
+			test.Assert(t, len(ctx.Warnings) == 0)
 
 			test.Assert(t, buildInfo != nil)
 			test.Assert(t, buildInfo.Name() == workspace.Name)
@@ -249,10 +246,7 @@ func TestBuildInfoFactory(t *testing.T) {
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 1)
 			test.Assert(t, dependencies[0].Kind() == dependents.DependentPathInfoKind)
-			test.Assert(t, dependencies[0].(dependents.DependentPathInfo).Path == include)
-
-			test.Assert(t, len(ctx.Errors) == 0)
-			test.Assert(t, len(ctx.Warnings) == 0)
+			test.Assert(t, dependencies[0].(dependents.DependentPathInfo).Path == includePath)
 		})
 	})
 }

@@ -3,6 +3,7 @@ package dependents
 import (
 	"manifold/internal/traversing"
 	"manifold/internal/validation"
+	"path/filepath"
 )
 
 type DependentPathInfo struct {
@@ -14,6 +15,9 @@ func (DependentPathInfo) Kind() DependentInfoKind {
 }
 
 func newDependentPath(path string, ctx traversing.Context) DependentInfo {
+	dir := filepath.Dir(ctx.CurrentFile())
+	path = filepath.Clean(filepath.Join(dir, path))
+
 	err := validation.ValidatePath(path)
 
 	if err != nil {

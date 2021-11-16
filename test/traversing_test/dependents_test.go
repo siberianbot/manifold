@@ -13,7 +13,7 @@ import (
 func TestDependentInfoFactory(t *testing.T) {
 	t.Run("FromIncludeDefinition", func(t *testing.T) {
 		t.Run("EmptyDefinition", func(t *testing.T) {
-			expected := fmt.Sprintf(validation.InvalidDependentProject, validation.EmptyPath)
+			expected := validation.EmptyWorkspaceInclude
 
 			ctx := test.NewFakeContext()
 			includeDefinition := document_definition.IncludeDefinition("")

@@ -13,13 +13,16 @@ func Assert(t *testing.T, condition bool) {
 	}
 }
 
-func CreateFile(t *testing.T, path string, content string) {
-	dir := filepath.Dir(path)
+func CreateDir(t *testing.T, dir string) {
 	err := os.MkdirAll(dir, os.ModeDir)
 
 	if err != nil {
 		t.Fatalf("failed to create %s: %v", dir, err)
 	}
+}
+
+func CreateFile(t *testing.T, path string, content string) {
+	CreateDir(t, filepath.Dir(path))
 
 	file, err := os.Create(path)
 
