@@ -11,13 +11,13 @@ import (
 	"strings"
 )
 
-func Traverse(path string) (*NodeCollection, *TraverseError) {
+func Traverse(path string) (*DependencyGraph, *TraverseError) {
 	return processRoot(path)
 }
 
-func processRoot(path string) (*NodeCollection, *TraverseError) {
+func processRoot(path string) (*DependencyGraph, *TraverseError) {
 	ctx, err := newContext(path)
-	nodeCollection := newNodeCollection()
+	graph := newDependencyGraph()
 
 	if err != nil {
 		return nil, newTraverseError(path, err)
@@ -29,19 +29,19 @@ func processRoot(path string) (*NodeCollection, *TraverseError) {
 		return nil, traverseErr
 	}
 
-	nodeCollection.Nodes = append(nodeCollection.Nodes, node)
-	nodeCollection.Root = node
+	graph.Nodes = append(graph.Nodes, node)
+	graph.Root = node
 
-	traverseErr = processNode(node, nodeCollection)
+	traverseErr = processNode(node, graph)
 
 	if traverseErr != nil {
 		return nil, traverseErr
 	}
 
-	return nodeCollection, nil
+	return graph, nil
 }
 
-func processNode(node *Node, nodeCollection *NodeCollection) *TraverseError {
+func processNode(node *Node, graph *DependencyGraph) *TraverseError {
 	newNodes := make([]*Node, 0)
 
 	for _, dependencyInfo := range node.Dependencies {
@@ -53,18 +53,18 @@ func processNode(node *Node, nodeCollection *NodeCollection) *TraverseError {
 			isNew := false
 
 			path := dependencyInfo.(dependents.DependentPathInfo).Path
-			isNew, dependencyNode, err = processByPath(path, nodeCollection)
+			isNew, dependencyNode, err = processByPath(path, graph)
 
 			if err == nil && isNew {
 				newNodes = append(newNodes, dependencyNode)
-				nodeCollection.Nodes = append(nodeCollection.Nodes, dependencyNode)
+				graph.Nodes = append(graph.Nodes, dependencyNode)
 			}
 
 			break
 
 		case dependents.DependentProjectInfoKind:
 			project := dependencyInfo.(dependents.DependentProjectInfo).Project
-			dependencyNode, err = processByProject(project, nodeCollection)
+			dependencyNode, err = processByName(project, graph)
 			break
 
 		default:
@@ -75,12 +75,12 @@ func processNode(node *Node, nodeCollection *NodeCollection) *TraverseError {
 			return err
 		}
 
-		link := newNodeLink(node, dependencyNode)
-		nodeCollection.Links = append(nodeCollection.Links, link)
+		link := newLink(node, dependencyNode)
+		graph.Links = append(graph.Links, link)
 	}
 
 	for _, newNode := range newNodes {
-		err := processNode(newNode, nodeCollection)
+		err := processNode(newNode, graph)
 
 		if err != nil {
 			return err
@@ -90,21 +90,14 @@ func processNode(node *Node, nodeCollection *NodeCollection) *TraverseError {
 	return nil
 }
 
-func processByPath(path string, nodeCollection *NodeCollection) (bool, *Node, *TraverseError) {
+func processByPath(path string, graph *DependencyGraph) (bool, *Node, *TraverseError) {
 	ctx, err := newContext(path)
 
 	if err != nil {
 		return false, nil, newTraverseError(path, err)
 	}
 
-	dependencyNode := (*Node)(nil)
-
-	for _, node := range nodeCollection.Nodes {
-		if node.BuildInfo.Path() == ctx.path {
-			dependencyNode = node
-			break
-		}
-	}
+	dependencyNode := graph.FindNodeByPath(ctx.path)
 
 	if dependencyNode != nil {
 		return false, dependencyNode, nil
@@ -119,19 +112,12 @@ func processByPath(path string, nodeCollection *NodeCollection) (bool, *Node, *T
 	return true, dependencyNode, nil
 }
 
-func processByProject(project string, nodeCollection *NodeCollection) (*Node, *TraverseError) {
-	dependencyNode := (*Node)(nil)
-
-	for _, node := range nodeCollection.Nodes {
-		if node.BuildInfo.Name() == project {
-			dependencyNode = node
-			break
-		}
-	}
+func processByName(name string, graph *DependencyGraph) (*Node, *TraverseError) {
+	dependencyNode := graph.FindNodeByName(name)
 
 	if dependencyNode == nil {
 		// TODO: handle error properly
-		return nil, newTraverseError("", errors.New(fmt.Sprintf("project not found: %s", project)))
+		return nil, newTraverseError("", errors.New(fmt.Sprintf("project not found: %s", name)))
 	}
 
 	return dependencyNode, nil
