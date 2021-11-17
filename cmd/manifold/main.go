@@ -1,78 +1,49 @@
 package main
 
 import (
-	"github.com/google/shlex"
-	"gopkg.in/yaml.v2"
-	"io"
+	"flag"
+	"fmt"
 	"log"
+	"manifold/internal/build"
 	"os"
-	"os/exec"
 )
 
-type projectDefinition struct {
-	Name string `yaml:"name"`
-}
-
-type stepDefinition struct {
-	// TODO: move this
-	Cmd string `yaml:"cmd"`
-}
-
-type projectDocument struct {
-	Project projectDefinition `yaml:"project"`
-	Steps   []stepDefinition  `yaml:"steps"`
-}
-
 func main() {
-	if len(os.Args) < 2 {
-		log.Println("no args")
-		os.Exit(0)
+	// TODO: nice usage is required :)
+	flag.Usage = func() {
+		usage := `Usage: %s build [path]
 
-		return
+build [path]      - build project or workspace located in current directory or on path if defined
+`
+
+		_, _ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf(usage, os.Args[0]))
 	}
 
-	file, err := os.ReadFile(os.Args[1])
+	os.Exit(realMain())
+}
 
-	if err != nil {
-		log.Println(err)
-		os.Exit(-1)
-
-		return
-	}
-
-	projectFile := projectDocument{}
-	err = yaml.Unmarshal(file, &projectFile)
-
-	if err != nil {
-		log.Println(err)
-		os.Exit(-2)
-
-		return
-	}
-
-	log.Println("building", projectFile.Project.Name)
-
-	for _, step := range projectFile.Steps {
-
-		cmdSplit, _ := shlex.Split(step.Cmd)
-
-		cmd := exec.Command("cmd", "/c")
-
-		cmd.Args = append(cmd.Args, cmdSplit...)
-
-		mw := io.MultiWriter(log.Writer())
-		cmd.Stdout = mw
-		cmd.Stderr = mw
-
-		cmdErr := cmd.Run()
-
-		if cmdErr != nil {
-			log.Println("finished step with error:", cmdErr)
-			os.Exit(-3)
-
-			return
+func realMain() int {
+	switch {
+	case len(os.Args) > 2 && os.Args[1] == "build":
+		var path string
+		if len(os.Args) == 2 {
+			path, _ = os.Getwd()
 		} else {
-			log.Println("finished step without errors")
+			path = os.Args[2]
 		}
+
+		err := build.Build(path)
+
+		if err != nil {
+			log.Println(fmt.Sprintf("build failed: %v", err))
+			return -1
+		}
+
+		log.Println("done")
+		return 0
+
+	default:
+		flag.Usage()
+		return 0
 	}
 }
