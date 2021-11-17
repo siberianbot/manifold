@@ -38,6 +38,12 @@ func processRoot(path string) (*DependencyGraph, *TraverseError) {
 		return nil, traverseErr
 	}
 
+	cycleErr := detectCycle(graph)
+
+	if cycleErr != nil {
+		return nil, newTraverseError(path, cycleErr)
+	}
+
 	return graph, nil
 }
 

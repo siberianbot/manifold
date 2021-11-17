@@ -16,6 +16,7 @@ import (
 
 func TestTraverse(t *testing.T) {
 	t.Run("SuccessfulCases", testSuccessfulCases)
+	t.Run("CircularDependencies", testCircularDependencies)
 }
 
 func testSuccessfulCases(t *testing.T) {
@@ -190,5 +191,52 @@ project:
 		test.Assert(t, g.FindLink(workspaceNode, barNode) != nil)
 		test.Assert(t, g.FindLink(workspaceNode, bazNode) != nil)
 		test.Assert(t, g.FindLink(barNode, bazNode) != nil)
+	})
+}
+
+func testCircularDependencies(t *testing.T) {
+	t.Run("Project_SelfReferences", func(t *testing.T) {
+		dirPath := filepath.Join(t.TempDir(), "foo")
+		path := filepath.Join(dirPath, ".manifold.yml")
+		foo := `
+project:
+  name: foo
+  dependencies:
+  - project: foo
+`
+
+		test.CreateFile(t, path, foo)
+
+		g, err := graph.Traverse(dirPath)
+
+		test.Assert(t, g == nil)
+		test.Assert(t, err != nil)
+	})
+
+	t.Run("Project_TransitiveReferences", func(t *testing.T) {
+		fooDir := filepath.Join(t.TempDir(), "foo")
+		fooPath := filepath.Join(fooDir, ".manifold.yml")
+		foo := `
+project:
+  name: foo
+  dependencies:
+  - project: bar
+`
+
+		test.CreateFile(t, fooPath, foo)
+
+		barPath := filepath.Join(fooDir, "bar", ".manifold.yml")
+		bar := `
+project:
+  name: bar
+  dependencies:
+  - project: foo
+`
+		test.CreateFile(t, barPath, bar)
+
+		g, err := graph.Traverse(fooDir)
+
+		test.Assert(t, g == nil)
+		test.Assert(t, err != nil)
 	})
 }

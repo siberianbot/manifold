@@ -36,6 +36,18 @@ func (g *DependencyGraph) FindLink(parent *Node, child *Node) *Link {
 	return nil
 }
 
+func (g *DependencyGraph) FindDescendants(node *Node) []*Node {
+	descendants := make([]*Node, 0)
+
+	for _, link := range g.Links {
+		if link.Parent == node {
+			descendants = append(descendants, link.Child)
+		}
+	}
+
+	return descendants
+}
+
 func newDependencyGraph() *DependencyGraph {
 	dependencyGraph := new(DependencyGraph)
 
