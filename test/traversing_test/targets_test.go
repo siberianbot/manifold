@@ -3,24 +3,24 @@ package traversing_test
 import (
 	"fmt"
 	"manifold/internal/document_definition"
-	"manifold/internal/traversing/build_info"
 	"manifold/internal/traversing/dependents"
+	"manifold/internal/traversing/targets"
 	"manifold/internal/validation"
 	"manifold/test"
 	"path/filepath"
 	"testing"
 )
 
-func TestBuildInfoFactory(t *testing.T) {
+func TestTargetFactory(t *testing.T) {
 	t.Run("EmptyDocument", func(t *testing.T) {
 		expected := validation.EmptyDocument
 		ctx := test.NewFakeContext()
 
 		document := document_definition.DocumentDefinition{}
 
-		buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+		target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-		test.Assert(t, buildInfo == nil)
+		test.Assert(t, target == nil)
 		test.Assert(t, dependencies != nil)
 		test.Assert(t, len(ctx.Errors) > 0)
 		test.Assert(t, ctx.Errors[0] == expected)
@@ -37,9 +37,9 @@ func TestBuildInfoFactory(t *testing.T) {
 			Workspace: &workspace,
 		}
 
-		buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+		target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-		test.Assert(t, buildInfo == nil)
+		test.Assert(t, target == nil)
 		test.Assert(t, dependencies != nil)
 		test.Assert(t, len(ctx.Errors) > 0)
 		test.Assert(t, ctx.Errors[0] == expected)
@@ -58,9 +58,9 @@ func TestBuildInfoFactory(t *testing.T) {
 				Project: &project,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo == nil)
+			test.Assert(t, target == nil)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 0)
@@ -81,13 +81,13 @@ func TestBuildInfoFactory(t *testing.T) {
 				Project: &project,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo != nil)
-			test.Assert(t, buildInfo.Name() == project.Name)
-			test.Assert(t, buildInfo.Path() == ctx.File)
-			test.Assert(t, buildInfo.Kind() == build_info.ProjectBuildInfoKind)
-			test.Assert(t, len(buildInfo.(build_info.ProjectBuildInfo).Steps) == 0)
+			test.Assert(t, target != nil)
+			test.Assert(t, target.Name() == project.Name)
+			test.Assert(t, target.Path() == ctx.File)
+			test.Assert(t, target.Kind() == targets.ProjectTargetKind)
+			test.Assert(t, len(target.(targets.ProjectTarget).Steps) == 0)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 0)
@@ -112,13 +112,13 @@ func TestBuildInfoFactory(t *testing.T) {
 				Project: &project,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo != nil)
-			test.Assert(t, buildInfo.Name() == project.Name)
-			test.Assert(t, buildInfo.Path() == ctx.File)
-			test.Assert(t, buildInfo.Kind() == build_info.ProjectBuildInfoKind)
-			test.Assert(t, len(buildInfo.(build_info.ProjectBuildInfo).Steps) > 0)
+			test.Assert(t, target != nil)
+			test.Assert(t, target.Name() == project.Name)
+			test.Assert(t, target.Path() == ctx.File)
+			test.Assert(t, target.Kind() == targets.ProjectTargetKind)
+			test.Assert(t, len(target.(targets.ProjectTarget).Steps) > 0)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 0)
@@ -146,13 +146,13 @@ func TestBuildInfoFactory(t *testing.T) {
 				Project: &project,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo != nil)
-			test.Assert(t, buildInfo.Name() == project.Name)
-			test.Assert(t, buildInfo.Path() == ctx.File)
-			test.Assert(t, buildInfo.Kind() == build_info.ProjectBuildInfoKind)
-			test.Assert(t, len(buildInfo.(build_info.ProjectBuildInfo).Steps) > 0)
+			test.Assert(t, target != nil)
+			test.Assert(t, target.Name() == project.Name)
+			test.Assert(t, target.Path() == ctx.File)
+			test.Assert(t, target.Kind() == targets.ProjectTargetKind)
+			test.Assert(t, len(target.(targets.ProjectTarget).Steps) > 0)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 1)
@@ -177,9 +177,9 @@ func TestBuildInfoFactory(t *testing.T) {
 				Workspace: &workspace,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo == nil)
+			test.Assert(t, target == nil)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 0)
@@ -200,12 +200,12 @@ func TestBuildInfoFactory(t *testing.T) {
 				Workspace: &workspace,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
-			test.Assert(t, buildInfo != nil)
-			test.Assert(t, buildInfo.Name() == workspace.Name)
-			test.Assert(t, buildInfo.Path() == ctx.File)
-			test.Assert(t, buildInfo.Kind() == build_info.WorkspaceBuildInfoKind)
+			test.Assert(t, target != nil)
+			test.Assert(t, target.Name() == workspace.Name)
+			test.Assert(t, target.Path() == ctx.File)
+			test.Assert(t, target.Kind() == targets.WorkspaceTargetKind)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 0)
@@ -233,15 +233,15 @@ func TestBuildInfoFactory(t *testing.T) {
 				Workspace: &workspace,
 			}
 
-			buildInfo, dependencies := build_info.FromDocumentDefinition(&document, &ctx)
+			target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
 			test.Assert(t, len(ctx.Errors) == 0)
 			test.Assert(t, len(ctx.Warnings) == 0)
 
-			test.Assert(t, buildInfo != nil)
-			test.Assert(t, buildInfo.Name() == workspace.Name)
-			test.Assert(t, buildInfo.Path() == ctx.File)
-			test.Assert(t, buildInfo.Kind() == build_info.WorkspaceBuildInfoKind)
+			test.Assert(t, target != nil)
+			test.Assert(t, target.Name() == workspace.Name)
+			test.Assert(t, target.Path() == ctx.File)
+			test.Assert(t, target.Kind() == targets.WorkspaceTargetKind)
 
 			test.Assert(t, dependencies != nil)
 			test.Assert(t, len(dependencies) == 1)

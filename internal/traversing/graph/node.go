@@ -1,12 +1,12 @@
 package graph
 
 import (
-	"manifold/internal/traversing/build_info"
 	"manifold/internal/traversing/dependents"
+	"manifold/internal/traversing/targets"
 )
 
 type Node struct {
-	BuildInfo    build_info.BuildInfo
+	Target       targets.Target
 	Dependencies []dependents.DependentInfo
 
 	// for cycle detection algorithm
@@ -15,10 +15,10 @@ type Node struct {
 	onStack bool
 }
 
-func newNode(buildInfo build_info.BuildInfo, dependencies []dependents.DependentInfo) *Node {
+func newNode(target targets.Target, dependencies []dependents.DependentInfo) *Node {
 	node := new(Node)
 
-	node.BuildInfo = buildInfo
+	node.Target = target
 	node.Dependencies = dependencies
 
 	// for cycle detection algorithm

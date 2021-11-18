@@ -1,8 +1,8 @@
 package traversing
 
 import (
-	"manifold/internal/traversing/build_info"
 	"manifold/internal/traversing/graph"
+	"manifold/internal/traversing/targets"
 	"manifold/test"
 	"path/filepath"
 	"testing"
@@ -37,9 +37,9 @@ project:
 		test.Assert(t, len(g.Nodes) == 1)
 		test.Assert(t, len(g.Links) == 0)
 		test.Assert(t, g.Root != nil)
-		test.Assert(t, g.Root.BuildInfo.Name() == "foo")
-		test.Assert(t, g.Root.BuildInfo.Kind() == build_info.ProjectBuildInfoKind)
-		test.Assert(t, g.Root.BuildInfo.Path() == path)
+		test.Assert(t, g.Root.Target.Name() == "foo")
+		test.Assert(t, g.Root.Target.Kind() == targets.ProjectTargetKind)
+		test.Assert(t, g.Root.Target.Path() == path)
 		test.Assert(t, len(g.Root.Dependencies) == 0)
 	})
 
@@ -59,9 +59,9 @@ project:
 		test.Assert(t, len(g.Nodes) == 1)
 		test.Assert(t, len(g.Links) == 0)
 		test.Assert(t, g.Root != nil)
-		test.Assert(t, g.Root.BuildInfo.Name() == "foo")
-		test.Assert(t, g.Root.BuildInfo.Kind() == build_info.ProjectBuildInfoKind)
-		test.Assert(t, g.Root.BuildInfo.Path() == path)
+		test.Assert(t, g.Root.Target.Name() == "foo")
+		test.Assert(t, g.Root.Target.Kind() == targets.ProjectTargetKind)
+		test.Assert(t, g.Root.Target.Path() == path)
 		test.Assert(t, len(g.Root.Dependencies) == 0)
 	})
 
@@ -81,9 +81,9 @@ workspace:
 		test.Assert(t, len(g.Nodes) == 1)
 		test.Assert(t, len(g.Links) == 0)
 		test.Assert(t, g.Root != nil)
-		test.Assert(t, g.Root.BuildInfo.Name() == "foo")
-		test.Assert(t, g.Root.BuildInfo.Kind() == build_info.WorkspaceBuildInfoKind)
-		test.Assert(t, g.Root.BuildInfo.Path() == path)
+		test.Assert(t, g.Root.Target.Name() == "foo")
+		test.Assert(t, g.Root.Target.Kind() == targets.WorkspaceTargetKind)
+		test.Assert(t, g.Root.Target.Path() == path)
 		test.Assert(t, len(g.Root.Dependencies) == 0)
 	})
 
@@ -115,16 +115,16 @@ project:
 		test.Assert(t, len(g.Links) == 1)
 
 		test.Assert(t, g.Root != nil)
-		test.Assert(t, g.Root.BuildInfo.Name() == "foo")
-		test.Assert(t, g.Root.BuildInfo.Kind() == build_info.WorkspaceBuildInfoKind)
-		test.Assert(t, g.Root.BuildInfo.Path() == fooPath)
+		test.Assert(t, g.Root.Target.Name() == "foo")
+		test.Assert(t, g.Root.Target.Kind() == targets.WorkspaceTargetKind)
+		test.Assert(t, g.Root.Target.Path() == fooPath)
 		test.Assert(t, len(g.Root.Dependencies) == 1)
 
 		dependencyNode := g.FindNodeByName("bar")
 		test.Assert(t, dependencyNode != nil)
-		test.Assert(t, dependencyNode.BuildInfo.Name() == "bar")
-		test.Assert(t, dependencyNode.BuildInfo.Kind() == build_info.ProjectBuildInfoKind)
-		test.Assert(t, dependencyNode.BuildInfo.Path() == barPath)
+		test.Assert(t, dependencyNode.Target.Name() == "bar")
+		test.Assert(t, dependencyNode.Target.Kind() == targets.ProjectTargetKind)
+		test.Assert(t, dependencyNode.Target.Path() == barPath)
 		test.Assert(t, len(dependencyNode.Dependencies) == 0)
 
 		test.Assert(t, g.FindLink(g.Root, dependencyNode) != nil)
@@ -169,23 +169,23 @@ project:
 
 		workspaceNode := g.Root
 		test.Assert(t, workspaceNode != nil)
-		test.Assert(t, workspaceNode.BuildInfo.Name() == "foo")
-		test.Assert(t, workspaceNode.BuildInfo.Kind() == build_info.WorkspaceBuildInfoKind)
-		test.Assert(t, workspaceNode.BuildInfo.Path() == fooPath)
+		test.Assert(t, workspaceNode.Target.Name() == "foo")
+		test.Assert(t, workspaceNode.Target.Kind() == targets.WorkspaceTargetKind)
+		test.Assert(t, workspaceNode.Target.Path() == fooPath)
 		test.Assert(t, len(workspaceNode.Dependencies) == 2)
 
 		barNode := g.FindNodeByName("bar")
 		test.Assert(t, barNode != nil)
-		test.Assert(t, barNode.BuildInfo.Name() == "bar")
-		test.Assert(t, barNode.BuildInfo.Kind() == build_info.ProjectBuildInfoKind)
-		test.Assert(t, barNode.BuildInfo.Path() == barPath)
+		test.Assert(t, barNode.Target.Name() == "bar")
+		test.Assert(t, barNode.Target.Kind() == targets.ProjectTargetKind)
+		test.Assert(t, barNode.Target.Path() == barPath)
 		test.Assert(t, len(barNode.Dependencies) == 1)
 
 		bazNode := g.FindNodeByName("baz")
 		test.Assert(t, bazNode != nil)
-		test.Assert(t, bazNode.BuildInfo.Name() == "baz")
-		test.Assert(t, bazNode.BuildInfo.Kind() == build_info.ProjectBuildInfoKind)
-		test.Assert(t, bazNode.BuildInfo.Path() == bazPath)
+		test.Assert(t, bazNode.Target.Name() == "baz")
+		test.Assert(t, bazNode.Target.Kind() == targets.ProjectTargetKind)
+		test.Assert(t, bazNode.Target.Path() == bazPath)
 		test.Assert(t, len(bazNode.Dependencies) == 0)
 
 		test.Assert(t, g.FindLink(workspaceNode, barNode) != nil)

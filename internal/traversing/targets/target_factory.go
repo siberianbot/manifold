@@ -1,4 +1,4 @@
-package build_info
+package targets
 
 import (
 	"manifold/internal/document_definition"
@@ -8,7 +8,7 @@ import (
 	"manifold/internal/validation"
 )
 
-func FromDocumentDefinition(document *document_definition.DocumentDefinition, ctx traversing.Context) (BuildInfo, []dependents.DependentInfo) {
+func FromDocumentDefinition(document *document_definition.DocumentDefinition, ctx traversing.Context) (Target, []dependents.DependentInfo) {
 	switch {
 	case document.Project != nil && document.Workspace != nil:
 		ctx.AddError(validation.DocumentWithBothProjectAndWorkspace)
@@ -26,13 +26,13 @@ func FromDocumentDefinition(document *document_definition.DocumentDefinition, ct
 	}
 }
 
-func fromProject(definition *document_definition.ProjectDefinition, ctx traversing.Context) (BuildInfo, []dependents.DependentInfo) {
+func fromProject(definition *document_definition.ProjectDefinition, ctx traversing.Context) (Target, []dependents.DependentInfo) {
 	if err := validation.ValidateManifoldName(definition.Name); err != nil {
 		ctx.AddError(validation.InvalidProject, err)
 		return nil, make([]dependents.DependentInfo, 0)
 	}
 
-	project := ProjectBuildInfo{
+	project := ProjectTarget{
 		name:  definition.Name,
 		path:  ctx.CurrentFile(),
 		Steps: make([]steps.Step, 0),
@@ -60,13 +60,13 @@ func fromProject(definition *document_definition.ProjectDefinition, ctx traversi
 	return project, dependencies
 }
 
-func fromWorkspace(definition *document_definition.WorkspaceDefinition, ctx traversing.Context) (BuildInfo, []dependents.DependentInfo) {
+func fromWorkspace(definition *document_definition.WorkspaceDefinition, ctx traversing.Context) (Target, []dependents.DependentInfo) {
 	if err := validation.ValidateManifoldName(definition.Name); err != nil {
 		ctx.AddError(validation.InvalidWorkspace, err)
 		return nil, make([]dependents.DependentInfo, 0)
 	}
 
-	workspace := WorkspaceBuildInfo{
+	workspace := WorkspaceTarget{
 		name: definition.Name,
 		path: ctx.CurrentFile(),
 	}

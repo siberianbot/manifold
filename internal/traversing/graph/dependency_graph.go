@@ -8,7 +8,7 @@ type DependencyGraph struct {
 
 func (g *DependencyGraph) FindNodeByName(name string) *Node {
 	for _, node := range g.Nodes {
-		if node.BuildInfo.Name() == name {
+		if node.Target.Name() == name {
 			return node
 		}
 	}
@@ -18,7 +18,7 @@ func (g *DependencyGraph) FindNodeByName(name string) *Node {
 
 func (g *DependencyGraph) FindNodeByPath(path string) *Node {
 	for _, node := range g.Nodes {
-		if node.BuildInfo.Path() == path {
+		if node.Target.Path() == path {
 			return node
 		}
 	}

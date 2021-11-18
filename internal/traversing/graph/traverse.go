@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"manifold/internal/document_definition"
-	"manifold/internal/traversing/build_info"
 	"manifold/internal/traversing/dependents"
+	"manifold/internal/traversing/targets"
 	"os"
 	"strings"
 )
@@ -147,7 +147,7 @@ func produceNode(ctx *contextImpl) (*Node, *TraverseError) {
 		return nil, newTraverseError(ctx.path, readErr)
 	}
 
-	buildInfo, dependencies := build_info.FromDocumentDefinition(document, ctx)
+	buildInfo, dependencies := targets.FromDocumentDefinition(document, ctx)
 
 	for _, warning := range ctx.warnings {
 		log.Println(fmt.Sprintf("warning: %s", warning))

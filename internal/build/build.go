@@ -3,8 +3,8 @@ package build
 import (
 	"errors"
 	"fmt"
-	"manifold/internal/traversing/build_info"
 	"manifold/internal/traversing/graph"
+	"manifold/internal/traversing/targets"
 )
 
 type buildContext struct {
@@ -53,10 +53,10 @@ func build(node *graph.Node, ctx *buildContext) error {
 		}
 	}
 
-	if node.BuildInfo.Kind() == build_info.ProjectBuildInfoKind {
-		projectBuildInfo := node.BuildInfo.(build_info.ProjectBuildInfo)
+	if node.Target.Kind() == targets.ProjectTargetKind {
+		projectTarget := node.Target.(targets.ProjectTarget)
 
-		for _, step := range projectBuildInfo.Steps {
+		for _, step := range projectTarget.Steps {
 			if stepErr := step.Execute(); stepErr != nil {
 				return stepErr
 			}
