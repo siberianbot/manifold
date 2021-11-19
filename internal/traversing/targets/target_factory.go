@@ -42,7 +42,7 @@ func fromProject(definition *document_definition.ProjectDefinition, ctx traversi
 		ctx.AddWarning(validation.ProjectWithoutSteps)
 	} else {
 		for _, stepDefinition := range definition.Steps {
-			step := steps.FromStepDefinition(stepDefinition, ctx)
+			step := ctx.GetStepProvider().CreateFor(stepDefinition, ctx)
 
 			if step != nil {
 				project.Steps = append(project.Steps, step)

@@ -1,6 +1,10 @@
 package graph
 
-import "fmt"
+import (
+	"fmt"
+	"manifold/internal/steps"
+	"manifold/internal/steps/command_step"
+)
 
 type contextImpl struct {
 	errors   []string
@@ -8,6 +12,12 @@ type contextImpl struct {
 
 	path string
 	dir  string
+
+	stepProvider steps.StepProvider
+}
+
+func (ctx *contextImpl) GetStepProvider() steps.StepProvider {
+	return ctx.stepProvider
 }
 
 func (ctx *contextImpl) AddError(message string, params ...interface{}) {
@@ -46,6 +56,9 @@ func newContext(path string) (ctx *contextImpl, err error) {
 	ctx.warnings = make([]string, 0)
 	ctx.path = absPath
 	ctx.dir = absDir
+
+	ctx.stepProvider = steps.NewDefaultStepProvider(
+		command_step.NewStepFactory())
 
 	return ctx, nil
 }
