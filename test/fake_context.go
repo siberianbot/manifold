@@ -1,11 +1,19 @@
 package test
 
-import "fmt"
+import (
+	"fmt"
+	"manifold/internal/steps"
+)
 
 type FakeContext struct {
-	Errors   []string
-	Warnings []string
-	File     string
+	Errors       []string
+	Warnings     []string
+	File         string
+	StepProvider steps.StepProvider
+}
+
+func (f *FakeContext) GetStepProvider() steps.StepProvider {
+	return f.StepProvider
 }
 
 func (f *FakeContext) AddError(message string, params ...interface{}) {
@@ -26,8 +34,9 @@ func (f FakeContext) CurrentFile() string {
 
 func NewFakeContext() FakeContext {
 	return FakeContext{
-		Errors:   make([]string, 0),
-		Warnings: make([]string, 0),
-		File:     "",
+		Errors:       make([]string, 0),
+		Warnings:     make([]string, 0),
+		File:         "",
+		StepProvider: steps.NewDefaultStepProvider(),
 	}
 }
