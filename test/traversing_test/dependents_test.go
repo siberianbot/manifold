@@ -2,7 +2,7 @@ package traversing_test
 
 import (
 	"fmt"
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/internal/traversing/dependents"
 	"manifold/internal/validation"
 	"manifold/test"
@@ -16,7 +16,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := validation.EmptyWorkspaceInclude
 
 			ctx := test.NewFakeContext()
-			includeDefinition := document_definition.IncludeDefinition("")
+			includeDefinition := config.IncludeDefinition("")
 
 			dependentInfo := dependents.FromIncludeDefinition(includeDefinition, &ctx)
 
@@ -30,7 +30,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := fmt.Sprintf(validation.InvalidDependentProject, fmt.Sprintf(validation.InvalidPath, path))
 
 			ctx := test.NewFakeContext()
-			includeDefinition := document_definition.IncludeDefinition(path)
+			includeDefinition := config.IncludeDefinition(path)
 
 			dependentInfo := dependents.FromIncludeDefinition(includeDefinition, &ctx)
 
@@ -54,7 +54,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			}
 
 			ctx := test.NewFakeContext()
-			includeDefinition := document_definition.IncludeDefinition(path)
+			includeDefinition := config.IncludeDefinition(path)
 
 			dependentInfo := dependents.FromIncludeDefinition(includeDefinition, &ctx)
 
@@ -70,7 +70,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := validation.EmptyProjectDependency
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{}
+			dependencyDefinition := config.DependencyDefinition{}
 
 			dependentInfo := dependents.FromDependencyDefinition(dependencyDefinition, &ctx)
 
@@ -83,7 +83,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := validation.DependencyWithBothProjectAndPath
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{
+			dependencyDefinition := config.DependencyDefinition{
 				Project: "foo",
 				Path:    "bar",
 			}
@@ -100,7 +100,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := fmt.Sprintf(validation.InvalidDependentProject, fmt.Sprintf(validation.InvalidManifoldName, project, validation.NameRegexPattern))
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{
+			dependencyDefinition := config.DependencyDefinition{
 				Project: project,
 			}
 
@@ -115,7 +115,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			project := "foo"
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{
+			dependencyDefinition := config.DependencyDefinition{
 				Project: project,
 			}
 
@@ -132,7 +132,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			expected := fmt.Sprintf(validation.InvalidDependentProject, fmt.Sprintf(validation.InvalidPath, path))
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{
+			dependencyDefinition := config.DependencyDefinition{
 				Path: path,
 			}
 
@@ -158,7 +158,7 @@ func TestDependentInfoFactory(t *testing.T) {
 			}
 
 			ctx := test.NewFakeContext()
-			dependencyDefinition := document_definition.DependencyDefinition{
+			dependencyDefinition := config.DependencyDefinition{
 				Path: path,
 			}
 

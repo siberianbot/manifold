@@ -1,12 +1,12 @@
-package document_definition
+package config
 
 import (
 	"gopkg.in/yaml.v2"
 	"io"
 )
 
-func Read(reader io.Reader) (*DocumentDefinition, error) {
-	var document DocumentDefinition
+func Read(reader io.Reader) (*ConfigurationDefinition, error) {
+	var document ConfigurationDefinition
 
 	decoder := yaml.NewDecoder(reader)
 

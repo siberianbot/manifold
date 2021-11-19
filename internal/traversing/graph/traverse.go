@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/internal/traversing/dependents"
 	"manifold/internal/traversing/targets"
 	"os"
@@ -141,7 +141,7 @@ func produceNode(ctx *contextImpl) (*Node, *TraverseError) {
 		return nil, newTraverseError(ctx.path, openErr)
 	}
 
-	document, readErr := document_definition.Read(file)
+	document, readErr := config.Read(file)
 
 	if readErr != nil {
 		return nil, newTraverseError(ctx.path, readErr)

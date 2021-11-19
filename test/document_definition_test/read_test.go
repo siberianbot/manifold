@@ -2,7 +2,7 @@ package document_definition_test
 
 import (
 	"bytes"
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/test"
 	"math/rand"
 	"strings"
@@ -12,7 +12,7 @@ import (
 func TestRead(t *testing.T) {
 	t.Run("EmptyFile", func(t *testing.T) {
 		reader := strings.NewReader("")
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc == nil)
 		test.Assert(t, err != nil)
@@ -23,7 +23,7 @@ func TestRead(t *testing.T) {
 		rand.Read(data)
 
 		reader := bytes.NewReader(data)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc == nil)
 		test.Assert(t, err != nil)
@@ -33,7 +33,7 @@ func TestRead(t *testing.T) {
 		yaml := `project:`
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)
@@ -46,7 +46,7 @@ project:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)
@@ -69,7 +69,7 @@ project:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)
@@ -88,7 +88,7 @@ project:
 		yaml := `workspace:`
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)
@@ -101,7 +101,7 @@ workspace:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)
@@ -121,7 +121,7 @@ workspace:
 `
 
 		reader := strings.NewReader(yaml)
-		doc, err := document_definition.Read(reader)
+		doc, err := config.Read(reader)
 
 		test.Assert(t, doc != nil)
 		test.Assert(t, err == nil)

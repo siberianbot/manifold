@@ -1,8 +1,6 @@
-package document_definition
+package config
 
-// TODO: this types should implement some interface for validation (i.e. Validatable with Validate(ctx) method)
-
-type DocumentDefinition struct {
+type ConfigurationDefinition struct {
 	Project   *ProjectDefinition   `yaml:"project"`
 	Workspace *WorkspaceDefinition `yaml:"workspace"`
 }

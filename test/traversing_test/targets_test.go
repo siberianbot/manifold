@@ -2,7 +2,7 @@ package traversing_test
 
 import (
 	"fmt"
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/internal/traversing/dependents"
 	"manifold/internal/traversing/targets"
 	"manifold/internal/validation"
@@ -16,7 +16,7 @@ func TestTargetFactory(t *testing.T) {
 		expected := validation.EmptyDocument
 		ctx := test.NewFakeContext()
 
-		document := document_definition.DocumentDefinition{}
+		document := config.ConfigurationDefinition{}
 
 		target, dependencies := targets.FromDocumentDefinition(&document, &ctx)
 
@@ -30,9 +30,9 @@ func TestTargetFactory(t *testing.T) {
 		expected := validation.DocumentWithBothProjectAndWorkspace
 		ctx := test.NewFakeContext()
 
-		project := document_definition.ProjectDefinition{}
-		workspace := document_definition.WorkspaceDefinition{}
-		document := document_definition.DocumentDefinition{
+		project := config.ProjectDefinition{}
+		workspace := config.WorkspaceDefinition{}
+		document := config.ConfigurationDefinition{
 			Project:   &project,
 			Workspace: &workspace,
 		}
@@ -51,10 +51,10 @@ func TestTargetFactory(t *testing.T) {
 			expected := fmt.Sprintf(validation.InvalidProject, fmt.Sprintf(validation.InvalidManifoldName, projectName, validation.NameRegexPattern))
 			ctx := test.NewFakeContext()
 
-			project := document_definition.ProjectDefinition{
+			project := config.ProjectDefinition{
 				Name: projectName,
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Project: &project,
 			}
 
@@ -74,10 +74,10 @@ func TestTargetFactory(t *testing.T) {
 			ctx := test.NewFakeContext()
 			ctx.File = "foo"
 
-			project := document_definition.ProjectDefinition{
+			project := config.ProjectDefinition{
 				Name: "foo",
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Project: &project,
 			}
 
@@ -101,14 +101,14 @@ func TestTargetFactory(t *testing.T) {
 			ctx := test.NewFakeContext()
 			ctx.File = "foo"
 
-			step := document_definition.StepDefinition{
+			step := config.StepDefinition{
 				"cmd": "foo",
 			}
-			project := document_definition.ProjectDefinition{
+			project := config.ProjectDefinition{
 				Name:  "foo",
-				Steps: []document_definition.StepDefinition{step},
+				Steps: []config.StepDefinition{step},
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Project: &project,
 			}
 
@@ -131,18 +131,18 @@ func TestTargetFactory(t *testing.T) {
 			ctx := test.NewFakeContext()
 			ctx.File = "foo"
 
-			step := document_definition.StepDefinition{
+			step := config.StepDefinition{
 				"cmd": "foo",
 			}
-			dependency := document_definition.DependencyDefinition{
+			dependency := config.DependencyDefinition{
 				Project: "bar",
 			}
-			project := document_definition.ProjectDefinition{
+			project := config.ProjectDefinition{
 				Name:         "foo",
-				Dependencies: []document_definition.DependencyDefinition{dependency},
-				Steps:        []document_definition.StepDefinition{step},
+				Dependencies: []config.DependencyDefinition{dependency},
+				Steps:        []config.StepDefinition{step},
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Project: &project,
 			}
 
@@ -170,10 +170,10 @@ func TestTargetFactory(t *testing.T) {
 			expected := fmt.Sprintf(validation.InvalidWorkspace, fmt.Sprintf(validation.InvalidManifoldName, workspaceName, validation.NameRegexPattern))
 			ctx := test.NewFakeContext()
 
-			workspace := document_definition.WorkspaceDefinition{
+			workspace := config.WorkspaceDefinition{
 				Name: workspaceName,
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Workspace: &workspace,
 			}
 
@@ -193,10 +193,10 @@ func TestTargetFactory(t *testing.T) {
 			ctx := test.NewFakeContext()
 			ctx.File = "foo"
 
-			workspace := document_definition.WorkspaceDefinition{
+			workspace := config.WorkspaceDefinition{
 				Name: "foo",
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Workspace: &workspace,
 			}
 
@@ -225,11 +225,11 @@ func TestTargetFactory(t *testing.T) {
 			includePath := filepath.Join(testDir, "foo", include)
 			test.CreateDir(t, includePath)
 
-			workspace := document_definition.WorkspaceDefinition{
+			workspace := config.WorkspaceDefinition{
 				Name:     "foo",
-				Includes: []document_definition.IncludeDefinition{document_definition.IncludeDefinition(include)},
+				Includes: []config.IncludeDefinition{config.IncludeDefinition(include)},
 			}
-			document := document_definition.DocumentDefinition{
+			document := config.ConfigurationDefinition{
 				Workspace: &workspace,
 			}
 

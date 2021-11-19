@@ -2,7 +2,7 @@ package steps_test
 
 import (
 	"fmt"
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/internal/steps"
 	"manifold/internal/validation"
 	"manifold/test"
@@ -21,7 +21,7 @@ func TestStepProvider(t *testing.T) {
 
 		provider := steps.NewDefaultStepProvider()
 		ctx := test.NewFakeContext()
-		definition := make(document_definition.StepDefinition)
+		definition := make(config.StepDefinition)
 
 		step := provider.CreateFor(definition, &ctx)
 
@@ -35,7 +35,7 @@ func TestStepProvider(t *testing.T) {
 		ctx := test.NewFakeContext()
 
 		name := "foo"
-		definition := make(document_definition.StepDefinition)
+		definition := make(config.StepDefinition)
 		definition[name] = name
 		expected := fmt.Sprintf(validation.StepResolveFailed, fmt.Sprintf(validation.StepNotMatchedAnyToolchain, name))
 
@@ -53,7 +53,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(barFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(document_definition.StepDefinition)
+		fooDefinition := make(config.StepDefinition)
 		fooDefinition[name] = name
 		expected := fmt.Sprintf(validation.StepResolveFailed, fmt.Sprintf(validation.StepNotMatchedAnyToolchain, name))
 
@@ -71,7 +71,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory, fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(document_definition.StepDefinition)
+		fooDefinition := make(config.StepDefinition)
 		fooDefinition[name] = name
 
 		expected := fmt.Sprintf(validation.StepResolveFailed, validation.StepMatchesManyToolchains)
@@ -90,7 +90,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(document_definition.StepDefinition)
+		fooDefinition := make(config.StepDefinition)
 		fooDefinition[name] = name
 
 		step := provider.CreateFor(fooDefinition, &ctx)
@@ -107,7 +107,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(document_definition.StepDefinition)
+		fooDefinition := make(config.StepDefinition)
 		fooDefinition[name] = name
 
 		step := provider.CreateFor(fooDefinition, &ctx)

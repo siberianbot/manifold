@@ -1,12 +1,12 @@
 package dependents
 
 import (
-	"manifold/internal/document_definition"
+	"manifold/internal/config"
 	"manifold/internal/traversing"
 	"manifold/internal/validation"
 )
 
-func FromDependencyDefinition(definition document_definition.DependencyDefinition, ctx traversing.Context) DependentInfo {
+func FromDependencyDefinition(definition config.DependencyDefinition, ctx traversing.Context) DependentInfo {
 	switch {
 	case definition.Project != "" && definition.Path != "":
 		ctx.AddError(validation.DependencyWithBothProjectAndPath)
@@ -24,7 +24,7 @@ func FromDependencyDefinition(definition document_definition.DependencyDefinitio
 	}
 }
 
-func FromIncludeDefinition(definition document_definition.IncludeDefinition, ctx traversing.Context) DependentInfo {
+func FromIncludeDefinition(definition config.IncludeDefinition, ctx traversing.Context) DependentInfo {
 	if definition == "" {
 		ctx.AddError(validation.EmptyWorkspaceInclude)
 		return nil
