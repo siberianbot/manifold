@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"manifold/internal/build"
@@ -9,16 +8,6 @@ import (
 )
 
 func main() {
-	// TODO: nice usage is required :)
-	flag.Usage = func() {
-		usage := `Usage: %s build [path]
-
-build [path]      - build project or workspace located in current directory or on path if defined
-`
-
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf(usage, os.Args[0]))
-	}
-
 	os.Exit(realMain())
 }
 
@@ -43,7 +32,7 @@ func realMain() int {
 		return 0
 
 	default:
-		flag.Usage()
+		println(help())
 		return 0
 	}
 }
