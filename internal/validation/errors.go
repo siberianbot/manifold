@@ -19,8 +19,8 @@ const (
 
 	CmdStepIsInvalid = "definition should be a non-empty string"
 
-	EmptyDocument                       = "document is empty"
-	DocumentWithBothProjectAndWorkspace = "document contains both definitions of project and workspace"
+	EmptyConfiguration                   = "configuration is empty"
+	ConfigurationWithProjectAndWorkspace = "configuration contains both definitions of project and workspace"
 
 	InvalidProject   = "invalid project: %v"
 	InvalidWorkspace = "invalid workspace: %v"

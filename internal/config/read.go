@@ -5,14 +5,14 @@ import (
 	"io"
 )
 
-func Read(reader io.Reader) (*ConfigurationDefinition, error) {
-	var document ConfigurationDefinition
+func Read(reader io.Reader) (Configuration, error) {
+	config := new(configuration)
 
 	decoder := yaml.NewDecoder(reader)
 
-	if yamlErr := decoder.Decode(&document); yamlErr != nil {
+	if yamlErr := decoder.Decode(config); yamlErr != nil {
 		return nil, yamlErr
 	}
 
-	return &document, nil
+	return config, nil
 }
