@@ -11,7 +11,10 @@ const (
 	DependencyWithBothProjectAndPath = "project dependency declares both dependent project name and path to dependent project"
 	InvalidDependentProject          = "invalid dependent project: %v"
 
-	StepNotMatch = "step does not matches any known toolchain"
+	StepNotMatch           = "step does not matches any known toolchain"
+	StepWithManyToolchains = "step should use only one toolchain at time"
+
+	CmdStepIsInvalid = "step cmd should be a string"
 
 	EmptyDocument                       = "document is empty"
 	DocumentWithBothProjectAndWorkspace = "document contains both definitions of project and workspace"

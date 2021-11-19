@@ -102,7 +102,7 @@ func TestTargetFactory(t *testing.T) {
 			ctx.File = "foo"
 
 			step := document_definition.StepDefinition{
-				Command: "foo",
+				"cmd": "foo",
 			}
 			project := document_definition.ProjectDefinition{
 				Name:  "foo",
@@ -132,7 +132,7 @@ func TestTargetFactory(t *testing.T) {
 			ctx.File = "foo"
 
 			step := document_definition.StepDefinition{
-				Command: "foo",
+				"cmd": "foo",
 			}
 			dependency := document_definition.DependencyDefinition{
 				Project: "bar",

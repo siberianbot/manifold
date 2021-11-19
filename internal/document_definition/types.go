@@ -23,7 +23,6 @@ type DependencyDefinition struct {
 	Project string `yaml:"project"`
 }
 
-type StepDefinition struct {
-	Command string `yaml:"cmd"`
-}
+type StepDefinition map[string]interface{}
+
 type IncludeDefinition string
