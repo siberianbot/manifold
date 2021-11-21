@@ -13,7 +13,7 @@ type defaultStepProvider struct {
 	factories []StepFactory
 }
 
-func (provider *defaultStepProvider) CreateFor(stepDefinition config.StepDefinition, ctx validation.Context) Step {
+func (provider *defaultStepProvider) CreateFor(stepDefinition config.Step, ctx validation.Context) Step {
 	factory, factoryErr := provider.getFactoryFor(stepDefinition)
 
 	if factoryErr != nil {
@@ -32,7 +32,7 @@ func (provider *defaultStepProvider) CreateFor(stepDefinition config.StepDefinit
 	return step
 }
 
-func (provider *defaultStepProvider) getFactoryFor(stepDefinition config.StepDefinition) (StepFactory, error) {
+func (provider *defaultStepProvider) getFactoryFor(stepDefinition config.Step) (StepFactory, error) {
 	if len(stepDefinition) == 0 {
 		return nil, errors.New(validation.EmptyStep)
 	}

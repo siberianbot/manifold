@@ -6,5 +6,5 @@ import (
 )
 
 type StepProvider interface {
-	CreateFor(definition config.StepDefinition, ctx validation.Context) Step
+	CreateFor(definition config.Step, ctx validation.Context) Step
 }

@@ -21,7 +21,7 @@ func TestStepProvider(t *testing.T) {
 
 		provider := steps.NewDefaultStepProvider()
 		ctx := test.NewFakeContext()
-		definition := make(config.StepDefinition)
+		definition := make(config.Step)
 
 		step := provider.CreateFor(definition, &ctx)
 
@@ -35,7 +35,7 @@ func TestStepProvider(t *testing.T) {
 		ctx := test.NewFakeContext()
 
 		name := "foo"
-		definition := make(config.StepDefinition)
+		definition := make(config.Step)
 		definition[name] = name
 		expected := fmt.Sprintf(validation.StepResolveFailed, fmt.Sprintf(validation.StepNotMatchedAnyToolchain, name))
 
@@ -53,7 +53,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(barFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(config.StepDefinition)
+		fooDefinition := make(config.Step)
 		fooDefinition[name] = name
 		expected := fmt.Sprintf(validation.StepResolveFailed, fmt.Sprintf(validation.StepNotMatchedAnyToolchain, name))
 
@@ -71,7 +71,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory, fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(config.StepDefinition)
+		fooDefinition := make(config.Step)
 		fooDefinition[name] = name
 
 		expected := fmt.Sprintf(validation.StepResolveFailed, validation.StepMatchesManyToolchains)
@@ -90,7 +90,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(config.StepDefinition)
+		fooDefinition := make(config.Step)
 		fooDefinition[name] = name
 
 		step := provider.CreateFor(fooDefinition, &ctx)
@@ -107,7 +107,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider(fooFactory)
 		ctx := test.NewFakeContext()
 
-		fooDefinition := make(config.StepDefinition)
+		fooDefinition := make(config.Step)
 		fooDefinition[name] = name
 
 		step := provider.CreateFor(fooDefinition, &ctx)
