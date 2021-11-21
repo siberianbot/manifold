@@ -26,7 +26,7 @@ type dependency struct {
 	Project string `yaml:"project"`
 }
 
-func (d *dependency) Validate(ctx ValidationContext) error {
+func (d *dependency) Validate(ctx validation.Context) error {
 	switch {
 	case d.Project != "" && d.Path != "":
 		return errors.New(validation.DependencyWithBothProjectAndPath)

@@ -1,9 +1,7 @@
 package config
 
-type ValidationContext interface {
-	Dir() string
-}
+import "manifold/internal/validation"
 
 type Validatable interface {
-	Validate(ctx ValidationContext) error
+	Validate(ctx validation.Context) error
 }

@@ -16,7 +16,7 @@ type configuration struct {
 	WorkspaceTarget *workspaceTarget `yaml:"workspace"`
 }
 
-func (c *configuration) Validate(ctx ValidationContext) error {
+func (c *configuration) Validate(ctx validation.Context) error {
 	switch {
 	case c.ProjectTarget != nil && c.WorkspaceTarget != nil:
 		return errors.New(validation.ConfigurationWithProjectAndWorkspace)

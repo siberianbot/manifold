@@ -15,7 +15,7 @@ type include struct {
 	path string
 }
 
-func (i *include) Validate(ctx ValidationContext) error {
+func (i *include) Validate(ctx validation.Context) error {
 	return validation.ValidatePath(utils.BuildPath(ctx.Dir(), i.path))
 }
 

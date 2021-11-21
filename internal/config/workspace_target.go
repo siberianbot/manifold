@@ -13,7 +13,7 @@ type workspaceTarget struct {
 	RawIncludes   []string `yaml:"includes"`
 }
 
-func (w *workspaceTarget) Validate(ctx ValidationContext) error {
+func (w *workspaceTarget) Validate(ctx validation.Context) error {
 	if err := validation.ValidateManifoldName(w.WorkspaceName); err != nil {
 		return err
 	}

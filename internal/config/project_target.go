@@ -15,7 +15,7 @@ type projectTarget struct {
 	RawSteps        []Step       `yaml:"steps"`
 }
 
-func (p *projectTarget) Validate(ctx ValidationContext) error {
+func (p *projectTarget) Validate(ctx validation.Context) error {
 	if err := validation.ValidateManifoldName(p.ProjectName); err != nil {
 		return err
 	}
