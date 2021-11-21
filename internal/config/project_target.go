@@ -12,7 +12,7 @@ type ProjectTarget interface {
 type projectTarget struct {
 	ProjectName     string       `yaml:"name"`
 	RawDependencies []dependency `yaml:"dependencies"`
-	RawSteps        Step         `yaml:"steps"`
+	RawSteps        []Step       `yaml:"steps"`
 }
 
 func (p *projectTarget) Validate(ctx ValidationContext) error {
@@ -41,12 +41,12 @@ func (p *projectTarget) Dependencies() []Dependency {
 	dependencies := make([]Dependency, len(p.RawDependencies))
 
 	for idx := 0; idx < len(p.RawDependencies); idx++ {
-		dependencies[idx] = &(p.RawDependencies[0])
+		dependencies[idx] = &(p.RawDependencies[idx])
 	}
 
 	return dependencies
 }
 
 func (p *projectTarget) Steps() []Step {
-	return p.Steps()
+	return p.RawSteps
 }
