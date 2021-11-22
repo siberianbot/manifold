@@ -3,7 +3,7 @@ package validation
 import (
 	"errors"
 	"fmt"
-	"os"
+	"manifold/internal/utils"
 )
 
 func ValidatePath(path string) error {
@@ -11,9 +11,7 @@ func ValidatePath(path string) error {
 		return errors.New(EmptyPath)
 	}
 
-	_, err := os.Stat(path)
-
-	if err != nil {
+	if !utils.Exists(path) {
 		return errors.New(fmt.Sprintf(InvalidPath, path))
 	}
 
