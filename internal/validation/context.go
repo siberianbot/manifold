@@ -2,14 +2,17 @@ package validation
 
 import "path/filepath"
 
-type Context interface {
-	Dir() string
+type Context struct {
+	Path string
 }
 
-type defaultContext struct {
-	path string
+func NewContext(path string) (ctx *Context) {
+	ctx = new(Context)
+	ctx.Path = path
+
+	return
 }
 
-func (d *defaultContext) Dir() string {
-	return filepath.Dir(d.path)
+func (ctx *Context) Dir() string {
+	return filepath.Dir(ctx.Path)
 }

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestErrorFactory(t *testing.T) {
+func TestNewError(t *testing.T) {
 	t.Run("MessageOnly", func(t *testing.T) {
 		msg := "foo"
 		err := validation.NewError(msg)

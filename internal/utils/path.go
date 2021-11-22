@@ -6,6 +6,14 @@ import (
 )
 
 func BuildPath(baseDir string, relativePath string) string {
+	if baseDir == "" {
+		return relativePath
+	}
+
+	if relativePath == "" {
+		return baseDir
+	}
+
 	return filepath.Clean(filepath.Join(baseDir, relativePath))
 }
 
