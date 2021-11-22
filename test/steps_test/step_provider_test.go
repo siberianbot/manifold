@@ -22,7 +22,7 @@ func TestStepProvider(t *testing.T) {
 		provider := steps.NewDefaultStepProvider()
 		configStep := make(config.Step)
 
-		step, err := provider.CreateFor(configStep)
+		step, err := provider.CreateFrom(configStep)
 
 		test.Assert(t, step == nil)
 		test.Assert(t, err != nil)
@@ -37,7 +37,7 @@ func TestStepProvider(t *testing.T) {
 		configStep := make(config.Step)
 		configStep[name] = name
 
-		step, err := provider.CreateFor(configStep)
+		step, err := provider.CreateFrom(configStep)
 
 		test.Assert(t, step == nil)
 		test.Assert(t, err != nil)
@@ -53,7 +53,7 @@ func TestStepProvider(t *testing.T) {
 		fooConfigStep := make(config.Step)
 		fooConfigStep[name] = name
 
-		step, err := provider.CreateFor(fooConfigStep)
+		step, err := provider.CreateFrom(fooConfigStep)
 
 		test.Assert(t, step == nil)
 		test.Assert(t, err != nil)
@@ -69,7 +69,7 @@ func TestStepProvider(t *testing.T) {
 		fooConfigStep := make(config.Step)
 		fooConfigStep[name] = name
 
-		step, err := provider.CreateFor(fooConfigStep)
+		step, err := provider.CreateFrom(fooConfigStep)
 
 		test.Assert(t, step == nil)
 		test.Assert(t, err != nil)
@@ -84,7 +84,7 @@ func TestStepProvider(t *testing.T) {
 		fooConfigStep := make(config.Step)
 		fooConfigStep[name] = name
 
-		step, err := provider.CreateFor(fooConfigStep)
+		step, err := provider.CreateFrom(fooConfigStep)
 
 		test.Assert(t, step != nil)
 		test.Assert(t, err == nil)
@@ -99,7 +99,7 @@ func TestStepProvider(t *testing.T) {
 		fooConfigStep := make(config.Step)
 		fooConfigStep[name] = name
 
-		step, err := provider.CreateFor(fooConfigStep)
+		step, err := provider.CreateFrom(fooConfigStep)
 
 		test.Assert(t, step == nil)
 		test.Assert(t, err != nil)

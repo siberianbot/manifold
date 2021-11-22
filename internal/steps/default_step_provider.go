@@ -13,7 +13,7 @@ type defaultStepProvider struct {
 	factories []StepFactory
 }
 
-func (provider *defaultStepProvider) CreateFor(configStep config.Step) (Step, error) {
+func (provider *defaultStepProvider) CreateFrom(configStep config.Step) (Step, error) {
 	factory, factoryErr := provider.getFactoryFor(configStep)
 
 	if factoryErr != nil {

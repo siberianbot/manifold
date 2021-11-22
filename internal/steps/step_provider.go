@@ -5,5 +5,5 @@ import (
 )
 
 type StepProvider interface {
-	CreateFor(configStep config.Step) (Step, error)
+	CreateFrom(configStep config.Step) (Step, error)
 }
