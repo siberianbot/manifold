@@ -118,11 +118,11 @@ workspace:
 		test.Assert(t, target.Name() == "foo")
 		test.Assert(t, target.Kind() == config.WorkspaceTargetKind)
 
-		includes := target.Includes()
+		includes := target.Dependencies()
 		test.Assert(t, includes != nil)
 		test.Assert(t, len(includes) == 2)
-		test.Assert(t, containsInclude(includes, "bar"))
-		test.Assert(t, containsInclude(includes, "baz"))
+		test.Assert(t, containsDependency(includes, config.PathDependencyKind, "bar"))
+		test.Assert(t, containsDependency(includes, config.PathDependencyKind, "baz"))
 	})
 }
 
@@ -139,16 +139,6 @@ func containsNamedStep(steps []config.Step, name string) bool {
 func containsDependency(dependencies []config.Dependency, kind config.DependencyKind, value string) bool {
 	for _, dependency := range dependencies {
 		if dependency.Kind() == kind && dependency.Value() == value {
-			return true
-		}
-	}
-
-	return false
-}
-
-func containsInclude(includes []config.Include, path string) bool {
-	for _, include := range includes {
-		if include.Path() == path {
 			return true
 		}
 	}

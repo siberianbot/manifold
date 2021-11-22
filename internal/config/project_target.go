@@ -5,14 +5,13 @@ import "manifold/internal/validation"
 type ProjectTarget interface {
 	Target
 
-	Dependencies() []Dependency
 	Steps() []Step
 }
 
 type projectTarget struct {
-	ProjectName     string       `yaml:"name"`
-	RawDependencies []dependency `yaml:"dependencies"`
-	RawSteps        []Step       `yaml:"steps"`
+	ProjectName     string              `yaml:"name"`
+	RawDependencies []projectDependency `yaml:"dependencies"`
+	RawSteps        []Step              `yaml:"steps"`
 }
 
 func (p *projectTarget) Validate(ctx validation.Context) error {

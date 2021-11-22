@@ -4,8 +4,6 @@ import "manifold/internal/validation"
 
 type WorkspaceTarget interface {
 	Target
-
-	Includes() []Include
 }
 
 type workspaceTarget struct {
@@ -18,8 +16,8 @@ func (w *workspaceTarget) Validate(ctx validation.Context) error {
 		return err
 	}
 
-	for _, inc := range w.Includes() {
-		if err := inc.Validate(ctx); err != nil {
+	for _, include := range w.Dependencies() {
+		if err := include.Validate(ctx); err != nil {
 			return err
 		}
 	}
@@ -35,11 +33,11 @@ func (workspaceTarget) Kind() TargetKind {
 	return WorkspaceTargetKind
 }
 
-func (w *workspaceTarget) Includes() []Include {
-	includes := make([]Include, len(w.RawIncludes))
+func (w *workspaceTarget) Dependencies() []Dependency {
+	includes := make([]Dependency, len(w.RawIncludes))
 
-	for idx := 0; idx < len(w.RawIncludes); idx++ {
-		includes[idx] = newInclude(w.RawIncludes[idx])
+	for idx, include := range w.RawIncludes {
+		includes[idx] = newInclude(include)
 	}
 
 	return includes

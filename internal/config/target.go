@@ -12,4 +12,5 @@ type Target interface {
 
 	Name() string
 	Kind() TargetKind
+	Dependencies() []Dependency
 }
