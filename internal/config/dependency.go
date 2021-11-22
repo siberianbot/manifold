@@ -8,9 +8,15 @@ const (
 	PathDependencyKind
 )
 
-type Dependency interface {
-	Validatable
+type Dependency struct {
+	kind  DependencyKind
+	value string
+}
 
-	Kind() DependencyKind
-	Value() string
+func (d *Dependency) Kind() DependencyKind {
+	return d.kind
+}
+
+func (d *Dependency) Value() string {
+	return d.value
 }

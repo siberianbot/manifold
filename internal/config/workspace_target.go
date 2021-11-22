@@ -1,43 +1,15 @@
 package config
 
-import "manifold/internal/validation"
-
-type WorkspaceTarget interface {
-	Target
+type WorkspaceTarget struct {
+	Name     string   `yaml:"name"`
+	Includes []string `yaml:"includes"`
 }
 
-type workspaceTarget struct {
-	WorkspaceName string   `yaml:"name"`
-	RawIncludes   []string `yaml:"includes"`
-}
+func (w *WorkspaceTarget) Dependencies() []Dependency {
+	includes := make([]Dependency, len(w.Includes))
 
-func (w *workspaceTarget) Validate(ctx validation.Context) error {
-	if err := validation.ValidateManifoldName(w.WorkspaceName); err != nil {
-		return err
-	}
-
-	for _, include := range w.Dependencies() {
-		if err := include.Validate(ctx); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (w *workspaceTarget) Name() string {
-	return w.WorkspaceName
-}
-
-func (workspaceTarget) Kind() TargetKind {
-	return WorkspaceTargetKind
-}
-
-func (w *workspaceTarget) Dependencies() []Dependency {
-	includes := make([]Dependency, len(w.RawIncludes))
-
-	for idx, include := range w.RawIncludes {
-		includes[idx] = newInclude(include)
+	for idx, include := range w.Includes {
+		includes[idx] = Dependency{kind: PathDependencyKind, value: include}
 	}
 
 	return includes

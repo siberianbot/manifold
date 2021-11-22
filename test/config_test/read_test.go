@@ -42,7 +42,8 @@ func testReadProject(t *testing.T) {
 
 		test.Assert(t, err == nil)
 		test.Assert(t, configuration != nil)
-		test.Assert(t, configuration.Target() == nil)
+		test.Assert(t, configuration.ProjectTarget == nil)
+		test.Assert(t, configuration.WorkspaceTarget == nil)
 	})
 
 	t.Run("Full", func(t *testing.T) {
@@ -64,18 +65,15 @@ project:
 		test.Assert(t, err == nil)
 		test.Assert(t, configuration != nil)
 
-		target, targetOk := configuration.Target().(config.ProjectTarget)
+		target := configuration.ProjectTarget
 		test.Assert(t, target != nil)
-		test.Assert(t, targetOk)
-		test.Assert(t, target.Name() == "foo")
-		test.Assert(t, target.Kind() == config.ProjectTargetKind)
+		test.Assert(t, target.Name == "foo")
 
-		steps := target.Steps()
-		test.Assert(t, steps != nil)
-		test.Assert(t, len(steps) == 3)
-		test.Assert(t, containsNamedStep(steps, "foo"))
-		test.Assert(t, containsNamedStep(steps, "bar"))
-		test.Assert(t, containsNamedStep(steps, "baz"))
+		test.Assert(t, target.Steps != nil)
+		test.Assert(t, len(target.Steps) == 3)
+		test.Assert(t, containsNamedStep(target.Steps, "foo"))
+		test.Assert(t, containsNamedStep(target.Steps, "bar"))
+		test.Assert(t, containsNamedStep(target.Steps, "baz"))
 
 		dependencies := target.Dependencies()
 		test.Assert(t, dependencies != nil)
@@ -94,7 +92,8 @@ func testReadWorkspace(t *testing.T) {
 
 		test.Assert(t, err == nil)
 		test.Assert(t, configuration != nil)
-		test.Assert(t, configuration.Target() == nil)
+		test.Assert(t, configuration.ProjectTarget == nil)
+		test.Assert(t, configuration.WorkspaceTarget == nil)
 	})
 
 	t.Run("Full", func(t *testing.T) {
@@ -112,11 +111,9 @@ workspace:
 		test.Assert(t, err == nil)
 		test.Assert(t, configuration != nil)
 
-		target, targetOk := configuration.Target().(config.WorkspaceTarget)
+		target := configuration.WorkspaceTarget
 		test.Assert(t, target != nil)
-		test.Assert(t, targetOk)
-		test.Assert(t, target.Name() == "foo")
-		test.Assert(t, target.Kind() == config.WorkspaceTargetKind)
+		test.Assert(t, target.Name == "foo")
 
 		includes := target.Dependencies()
 		test.Assert(t, includes != nil)

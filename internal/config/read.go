@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-func Read(reader io.Reader) (Configuration, error) {
-	config := new(configuration)
+func Read(reader io.Reader) (*Configuration, error) {
+	config := new(Configuration)
 
 	decoder := yaml.NewDecoder(reader)
 
