@@ -11,13 +11,9 @@ const (
 	EmptyPath           = "path is empty"
 	InvalidPath         = "invalid path \"%s\""
 
-	StepResolveFailed          = "step resolution failed: %v"
 	EmptyStep                  = "step is empty"
 	StepFailed                 = "step %s failed: %v"
-	StepNotMatchedAnyToolchain = "step %s does not matches any known toolchain"
-	StepMatchesManyToolchains  = "step matches many known toolchain"
-
-	CmdStepIsInvalid = "definition should be a non-empty string"
+	StepNotMatchedAnyToolchain = "one or more steps does not matched any known handler"
 
 	EmptyConfiguration                   = "configuration is empty"
 	ConfigurationWithProjectAndWorkspace = "configuration contains both definitions of project and workspace"
