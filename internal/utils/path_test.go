@@ -1,7 +1,6 @@
-package utils_test
+package utils
 
 import (
-	"manifold/internal/utils"
 	"manifold/test"
 	"path/filepath"
 	"testing"
@@ -11,7 +10,7 @@ func TestBuildPath(t *testing.T) {
 	t.Run("NoBaseDirAndRelativePath", func(t *testing.T) {
 		baseDir := ""
 		relativePath := ""
-		result := utils.BuildPath(baseDir, relativePath)
+		result := BuildPath(baseDir, relativePath)
 
 		test.Assert(t, result == "")
 	})
@@ -19,7 +18,7 @@ func TestBuildPath(t *testing.T) {
 	t.Run("OnlyBaseDir", func(t *testing.T) {
 		baseDir := "BaseDir"
 		relativePath := ""
-		result := utils.BuildPath(baseDir, relativePath)
+		result := BuildPath(baseDir, relativePath)
 
 		test.Assert(t, result == baseDir)
 	})
@@ -27,7 +26,7 @@ func TestBuildPath(t *testing.T) {
 	t.Run("OnlyRelativePath", func(t *testing.T) {
 		baseDir := ""
 		relativePath := "RelativePath"
-		result := utils.BuildPath(baseDir, relativePath)
+		result := BuildPath(baseDir, relativePath)
 
 		test.Assert(t, result == relativePath)
 	})
@@ -35,7 +34,7 @@ func TestBuildPath(t *testing.T) {
 	t.Run("WithBaseDirAndRelativePath", func(t *testing.T) {
 		baseDir := "BaseDir"
 		relativePath := ""
-		result := utils.BuildPath(baseDir, relativePath)
+		result := BuildPath(baseDir, relativePath)
 
 		test.Assert(t, result == filepath.Join(baseDir, relativePath))
 	})
