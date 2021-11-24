@@ -15,19 +15,7 @@ const (
 	StepFailed                 = "step %s failed: %v"
 	StepNotMatchedAnyToolchain = "one or more steps does not matched any known handler"
 
-	EmptyConfiguration                   = "configuration is empty"
-	ConfigurationWithProjectAndWorkspace = "configuration contains both definitions of project and workspace"
-
-	InvalidProject           = "project is invalid: %v"
-	InvalidProjectDependency = "project dependency is invalid: %v"
-	InvalidWorkspace         = "workspace is invalid: %v"
-	InvalidWorkspaceInclude  = "workspace include is invalid: %v"
-
-	EmptyProjectDependency                  = "project dependency does not declare dependent project name nor path to dependent project"
-	ProjectDependencyWithBothProjectAndPath = "project dependency declares both dependent project name and path to dependent project"
-	EmptyWorkspaceInclude                   = "workspace include is empty"
-
-	NotManifoldPath = "path \"%s\" does not contain manifold configuration"
+	UnknownTarget = "target \"%s\" not found"
 )
 
 func NewError(msg string, args ...interface{}) error {

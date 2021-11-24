@@ -2,6 +2,7 @@ package config
 
 import (
 	"bytes"
+	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strings"
 	"testing"
@@ -12,13 +13,8 @@ func TestRead(t *testing.T) {
 		reader := strings.NewReader("")
 		configuration, err := Read(reader)
 
-		if configuration != nil {
-			t.Error("configuration is not nil")
-		}
-
-		if err == nil {
-			t.Error("error is nil")
-		}
+		assert.Empty(t, configuration)
+		assert.Error(t, err)
 	})
 
 	t.Run("RandomFile", func(t *testing.T) {
@@ -28,44 +24,11 @@ func TestRead(t *testing.T) {
 		reader := bytes.NewReader(data)
 		configuration, err := Read(reader)
 
-		if configuration != nil {
-			t.Error("configuration is not nil")
-		}
-
-		if err == nil {
-			t.Error("error is nil")
-		}
+		assert.Empty(t, configuration)
+		assert.Error(t, err)
 	})
 
-	t.Run("Project", testReadProject)
-	t.Run("Workspace", testReadWorkspace)
-}
-
-func testReadProject(t *testing.T) {
-	t.Run("Empty", func(t *testing.T) {
-		content := `project:`
-
-		reader := strings.NewReader(content)
-		configuration, err := Read(reader)
-
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
-
-		if configuration == nil {
-			t.Error("configuration is nil")
-		} else {
-			if configuration.ProjectTarget != nil {
-				t.Error("configuration.ProjectTarget is not nil")
-			}
-
-			if configuration.WorkspaceTarget != nil {
-				t.Error("configuration.WorkspaceTarget is not nil")
-			}
-		}
-	})
-
-	t.Run("Full", func(t *testing.T) {
+	t.Run("ProjectConfig", func(t *testing.T) {
 		content := `
 project:
   name: foo
@@ -81,81 +44,26 @@ project:
 		reader := strings.NewReader(content)
 		configuration, err := Read(reader)
 
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
+		assert.NotEmpty(t, configuration)
+		assert.NoError(t, err)
 
-		if configuration == nil {
-			t.Error("configuration is nil")
-		} else {
-			if configuration.ProjectTarget == nil {
-				t.Error("configuration.ProjectTarget is nil")
-			} else {
-				if configuration.ProjectTarget.Name != "foo" {
-					t.Errorf("configuration.ProjectTarget.Name is %s, not %s", configuration.ProjectTarget.Name, "foo")
-				}
+		assert.NotEmpty(t, configuration.ProjectTarget)
 
-				if configuration.ProjectTarget.Steps == nil {
-					t.Error("configuration.ProjectTarget.Steps is nil")
-				} else if len(configuration.ProjectTarget.Steps) != 3 {
-					t.Errorf("len(configuration.ProjectTarget.Steps) is %v, not %v", len(configuration.ProjectTarget.Steps), 3)
-				} else {
-					if !containsNamedStep(configuration.ProjectTarget.Steps, "foo") {
-						t.Error("configuration.ProjectTarget.Steps doesn't contains foo")
-					}
+		assert.Equal(t, "foo", configuration.ProjectTarget.Name)
 
-					if !containsNamedStep(configuration.ProjectTarget.Steps, "bar") {
-						t.Error("configuration.ProjectTarget.Steps doesn't contains bar")
-					}
+		assert.NotEmpty(t, configuration.ProjectTarget.Steps)
+		assert.Len(t, configuration.ProjectTarget.Steps, 3)
+		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "foo"), "configuration.ProjectTarget.Steps doesn't contains foo")
+		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "bar"), "configuration.ProjectTarget.Steps doesn't contains bar")
+		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "baz"), "configuration.ProjectTarget.Steps doesn't contains baz")
 
-					if !containsNamedStep(configuration.ProjectTarget.Steps, "baz") {
-						t.Error("configuration.ProjectTarget.Steps doesn't contains baz")
-					}
-				}
-
-				if configuration.ProjectTarget.ProjectDependencies == nil {
-					t.Error("configuration.ProjectTarget.ProjectDependencies is nil")
-				} else if len(configuration.ProjectTarget.ProjectDependencies) != 2 {
-					t.Errorf("len(configuration.ProjectTarget.ProjectDependencies) is %v, not %v", len(configuration.ProjectTarget.ProjectDependencies), 2)
-				} else {
-					if !containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "", "bar") {
-						t.Error("configuration.ProjectTarget.ProjectDependencies doesn't contains project bar")
-					}
-
-					if !containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "baz", "") {
-						t.Error("configuration.ProjectTarget.ProjectDependencies doesn't contains path baz")
-					}
-				}
-			}
-		}
-	})
-}
-
-func testReadWorkspace(t *testing.T) {
-	t.Run("Empty", func(t *testing.T) {
-		content := `workspace:`
-
-		reader := strings.NewReader(content)
-		configuration, err := Read(reader)
-
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
-
-		if configuration == nil {
-			t.Error("configuration is nil")
-		} else {
-			if configuration.ProjectTarget != nil {
-				t.Error("configuration.ProjectTarget is not nil")
-			}
-
-			if configuration.WorkspaceTarget != nil {
-				t.Error("configuration.WorkspaceTarget is not nil")
-			}
-		}
+		assert.NotEmpty(t, configuration.ProjectTarget.ProjectDependencies)
+		assert.Len(t, configuration.ProjectTarget.ProjectDependencies, 2)
+		assert.True(t, containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "", "bar"), "configuration.ProjectTarget.ProjectDependencies doesn't contains project bar")
+		assert.True(t, containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "baz", ""), "configuration.ProjectTarget.ProjectDependencies doesn't contains path baz")
 	})
 
-	t.Run("Full", func(t *testing.T) {
+	t.Run("WorkspaceConfig", func(t *testing.T) {
 		content := `
 workspace:
   name: foo
@@ -167,35 +75,17 @@ workspace:
 		reader := strings.NewReader(content)
 		configuration, err := Read(reader)
 
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
+		assert.NotEmpty(t, configuration)
+		assert.NoError(t, err)
 
-		if configuration == nil {
-			t.Error("configuration is nil")
-		} else {
-			if configuration.WorkspaceTarget == nil {
-				t.Error("configuration.WorkspaceTarget is nil")
-			} else {
-				if configuration.WorkspaceTarget.Name != "foo" {
-					t.Errorf("configuration.WorkspaceTarget.Name is %s, not %s", configuration.WorkspaceTarget.Name, "foo")
-				}
+		assert.NotEmpty(t, configuration.WorkspaceTarget)
 
-				if configuration.WorkspaceTarget.Includes == nil {
-					t.Error("configuration.WorkspaceTarget.Includes is nil")
-				} else if len(configuration.WorkspaceTarget.Includes) != 2 {
-					t.Errorf("len(configuration.WorkspaceTarget.Includes) is %v, not %v", len(configuration.WorkspaceTarget.Includes), 2)
-				} else {
-					if !containsInclude(configuration.WorkspaceTarget.Includes, "bar") {
-						t.Error("configuration.WorkspaceTarget.Includes doesn't contains bar")
-					}
+		assert.Equal(t, "foo", configuration.WorkspaceTarget.Name)
 
-					if !containsInclude(configuration.WorkspaceTarget.Includes, "baz") {
-						t.Error("configuration.WorkspaceTarget.Includes doesn't contains baz")
-					}
-				}
-			}
-		}
+		assert.NotEmpty(t, configuration.WorkspaceTarget.Includes)
+		assert.Len(t, configuration.WorkspaceTarget.Includes, 2)
+		assert.True(t, containsInclude(configuration.WorkspaceTarget.Includes, "bar"), "configuration.WorkspaceTarget.Includes doesn't contains bar")
+		assert.True(t, containsInclude(configuration.WorkspaceTarget.Includes, "baz"), "configuration.WorkspaceTarget.Includes doesn't contains baz")
 	})
 }
 
