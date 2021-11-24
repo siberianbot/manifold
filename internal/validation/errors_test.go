@@ -2,6 +2,7 @@ package validation
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -10,9 +11,7 @@ func TestNewError(t *testing.T) {
 		msg := "foo"
 		err := NewError(msg)
 
-		if err.Error() != msg {
-			t.Errorf("error is %v, not %s", err, msg)
-		}
+		assert.EqualError(t, err, msg)
 	})
 
 	t.Run("MessageWithArgs", func(t *testing.T) {
@@ -22,9 +21,6 @@ func TestNewError(t *testing.T) {
 
 		err := NewError(msg, arg1, arg2)
 
-		expected := fmt.Sprintf(msg, arg1, arg2)
-		if err.Error() != expected {
-			t.Errorf("error is %v, not %s", err, expected)
-		}
+		assert.EqualError(t, err, fmt.Sprintf(msg, arg1, arg2))
 	})
 }

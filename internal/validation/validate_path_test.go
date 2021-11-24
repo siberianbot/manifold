@@ -2,6 +2,7 @@ package validation
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,15 +12,9 @@ import (
 func TestPathValidation(t *testing.T) {
 	t.Run("EmptyPath", func(t *testing.T) {
 		path := ""
-		expected := EmptyPath
-
 		err := ValidatePath(path)
 
-		if err == nil {
-			t.Error("error is nil")
-		} else if err.Error() != expected {
-			t.Errorf("error is %v, not %s", err, expected)
-		}
+		assert.EqualError(t, err, EmptyPath)
 	})
 
 	t.Run("ValidPath", func(t *testing.T) {
@@ -31,9 +26,7 @@ func TestPathValidation(t *testing.T) {
 
 		err := ValidatePath(path)
 
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
+		assert.NoError(t, err)
 	})
 
 	t.Run("ValidDirPath", func(t *testing.T) {
@@ -41,36 +34,22 @@ func TestPathValidation(t *testing.T) {
 
 		err := ValidatePath(path)
 
-		if err != nil {
-			t.Errorf("error is %v, not nil", err)
-		}
+		assert.NoError(t, err)
 	})
 
 	t.Run("InvalidPath", func(t *testing.T) {
 		path := "baz"
-		expected := fmt.Sprintf(InvalidPath, path)
-
 		err := ValidatePath(path)
 
-		if err == nil {
-			t.Error("error is nil")
-		} else if err.Error() != expected {
-			t.Errorf("error is %v, not %s", err, expected)
-		}
+		assert.EqualError(t, err, fmt.Sprintf(InvalidPath, path))
 	})
 
 	if runtime.GOOS == "windows" {
 		t.Run("InvalidSymbolsInPath", func(t *testing.T) {
 			path := "baz\":<>|?*"
-			expected := fmt.Sprintf(InvalidPath, path)
-
 			err := ValidatePath(path)
 
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != expected {
-				t.Errorf("error is %v, not %s", err, expected)
-			}
+			assert.EqualError(t, err, fmt.Sprintf(InvalidPath, path))
 		})
 	}
 }

@@ -2,6 +2,7 @@ package validation
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -10,37 +11,23 @@ func TestManifoldNameValidation(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := ValidateManifoldName(name)
 
-			if err != nil {
-				t.Errorf("error is %v, not nil", err)
-			}
+			assert.NoError(t, err)
 		})
 	}
 
 	invalidTest := func(t *testing.T, name string) {
 		t.Run(name, func(t *testing.T) {
-			expected := fmt.Sprintf(InvalidManifoldName, name, NameRegexPattern)
-
 			err := ValidateManifoldName(name)
 
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != expected {
-				t.Errorf("error is %v, not %s", err, expected)
-			}
+			assert.EqualError(t, err, fmt.Sprintf(InvalidManifoldName, name, NameRegexPattern))
 		})
 	}
 
 	t.Run("EmptyName", func(t *testing.T) {
 		name := ""
-		expected := EmptyManifoldName
-
 		err := ValidateManifoldName(name)
 
-		if err == nil {
-			t.Error("error is nil")
-		} else if err.Error() != expected {
-			t.Errorf("error is %v, not %s", err, expected)
-		}
+		assert.EqualError(t, err, EmptyManifoldName)
 	})
 
 	t.Run("ValidNames", func(t *testing.T) {

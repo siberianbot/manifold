@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"manifold/test"
+	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"testing"
 )
@@ -12,7 +12,7 @@ func TestBuildPath(t *testing.T) {
 		relativePath := ""
 		result := BuildPath(baseDir, relativePath)
 
-		test.Assert(t, result == "")
+		assert.Equal(t, "", result)
 	})
 
 	t.Run("OnlyBaseDir", func(t *testing.T) {
@@ -20,7 +20,7 @@ func TestBuildPath(t *testing.T) {
 		relativePath := ""
 		result := BuildPath(baseDir, relativePath)
 
-		test.Assert(t, result == baseDir)
+		assert.Equal(t, baseDir, result)
 	})
 
 	t.Run("OnlyRelativePath", func(t *testing.T) {
@@ -28,7 +28,7 @@ func TestBuildPath(t *testing.T) {
 		relativePath := "RelativePath"
 		result := BuildPath(baseDir, relativePath)
 
-		test.Assert(t, result == relativePath)
+		assert.Equal(t, relativePath, result)
 	})
 
 	t.Run("WithBaseDirAndRelativePath", func(t *testing.T) {
@@ -36,6 +36,6 @@ func TestBuildPath(t *testing.T) {
 		relativePath := ""
 		result := BuildPath(baseDir, relativePath)
 
-		test.Assert(t, result == filepath.Join(baseDir, relativePath))
+		assert.Equal(t, filepath.Join(baseDir, relativePath), result)
 	})
 }

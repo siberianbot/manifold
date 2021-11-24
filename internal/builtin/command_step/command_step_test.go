@@ -1,6 +1,7 @@
 package command_step
 
 import (
+	"github.com/stretchr/testify/assert"
 	"manifold/internal/steps"
 	"testing"
 )
@@ -10,13 +11,8 @@ func TestPopulateOptions(t *testing.T) {
 
 	PopulateOptions(options)
 
-	if options.Executors[Name] == nil {
-		t.Errorf("no executor with name %s", Name)
-	}
-
-	if options.Factories[Name] == nil {
-		t.Errorf("no factory with name %s", Name)
-	}
+	assert.NotEmptyf(t, options.Executors[Name], "no executor with name %s", Name)
+	assert.NotEmptyf(t, options.Factories[Name], "no factory with name %s", Name)
 }
 
 func TestFactory(t *testing.T) {
@@ -24,15 +20,8 @@ func TestFactory(t *testing.T) {
 		test := func(t *testing.T, definition interface{}) {
 			step, err := newStep(definition)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			if err == nil {
-				t.Error("no error")
-			} else if err.Error() != StepIsInvalid {
-				t.Errorf("error is %s, not %s", err.Error(), StepIsInvalid)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, StepIsInvalid)
 		}
 
 		t.Run("Number", func(t *testing.T) { test(t, 42) })
@@ -48,22 +37,9 @@ func TestFactory(t *testing.T) {
 
 		step, err := newStep(cmd)
 
-		if step == nil {
-			t.Error("step is nil")
-		} else if step.Name() != Name {
-			t.Errorf("step's name is %s, not %s", step.Name(), Name)
-		} else {
-			cmdStep, ok := step.(*commandStep)
-
-			if !ok {
-				t.Error("step is not commandStep ptr")
-			} else if cmdStep.cmd != cmd {
-				t.Errorf("step.cmd is %s, not %s", cmdStep.cmd, cmd)
-			}
-		}
-
-		if err != nil {
-			t.Errorf("error is not nil: %v", err)
-		}
+		assert.NotEmpty(t, step)
+		assert.Equal(t, Name, step.Name())
+		assert.IsType(t, &commandStep{cmd: cmd}, step)
+		assert.NoError(t, err)
 	})
 }
