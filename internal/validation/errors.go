@@ -11,10 +11,6 @@ const (
 	EmptyPath           = "path is empty"
 	InvalidPath         = "invalid path \"%s\""
 
-	EmptyStep                  = "step is empty"
-	StepFailed                 = "step %s failed: %v"
-	StepNotMatchedAnyToolchain = "one or more steps does not matched any known handler"
-
 	UnknownTarget = "target \"%s\" not found"
 )
 

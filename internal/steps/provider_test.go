@@ -3,8 +3,8 @@ package steps
 import (
 	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"manifold/internal/config"
-	"manifold/internal/validation"
 	"testing"
 )
 
@@ -12,11 +12,8 @@ func TestNewProvider(t *testing.T) {
 	options := NewProviderOptions()
 	provider := NewProvider(options)
 
-	if provider == nil {
-		t.Error("provider is nil")
-	} else if provider.options == nil {
-		t.Error("provider.options is nil")
-	}
+	assert.NotEmpty(t, provider)
+	assert.NotEmpty(t, provider.options)
 }
 
 func TestProvider(t *testing.T) {
@@ -29,15 +26,8 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(configStep)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != validation.EmptyStep {
-				t.Errorf("error is %s, not %s", err.Error(), validation.EmptyStep)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, EmptyStep)
 		})
 
 		t.Run("NilStep", func(t *testing.T) {
@@ -46,15 +36,8 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(nil)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != validation.EmptyStep {
-				t.Errorf("error is %s, not %s", err.Error(), validation.EmptyStep)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, EmptyStep)
 		})
 
 		t.Run("NoFactories", func(t *testing.T) {
@@ -66,15 +49,8 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(configStep)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != validation.StepNotMatchedAnyToolchain {
-				t.Errorf("error is %s, not %s", err.Error(), validation.StepNotMatchedAnyToolchain)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, StepNotMatched)
 		})
 
 		t.Run("WithNotMatchingFactory", func(t *testing.T) {
@@ -87,15 +63,8 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(configStep)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != validation.StepNotMatchedAnyToolchain {
-				t.Errorf("error is %s, not %s", err.Error(), validation.StepNotMatchedAnyToolchain)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, StepNotMatched)
 		})
 
 		t.Run("WithMatchingFactoryButFails", func(t *testing.T) {
@@ -108,17 +77,8 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(configStep)
 
-			if step != nil {
-				t.Error("step is not nil")
-			}
-
-			expected := fmt.Sprintf(validation.StepFailed, "foo", "error")
-
-			if err == nil {
-				t.Error("error is nil")
-			} else if err.Error() != expected {
-				t.Errorf("error is %s, not %s", err.Error(), expected)
-			}
+			assert.Empty(t, step)
+			assert.EqualError(t, err, fmt.Sprintf(StepFailed, "foo", "error"))
 		})
 
 		t.Run("WithMatchingFactoryAndNotFails", func(t *testing.T) {
@@ -131,21 +91,10 @@ func TestProvider(t *testing.T) {
 
 			step, err := provider.CreateFrom(configStep)
 
-			if step == nil {
-				t.Error("step is nil")
-			} else {
-				_, ok := step.(*testStep)
-
-				if !ok {
-					t.Error("step.name is not testStep")
-				} else if step.Name() != "foo" {
-					t.Errorf("step.name is %s, not %s", step.Name(), "foo")
-				}
-			}
-
-			if err != nil {
-				t.Errorf("error is %s, not nil", err.Error())
-			}
+			assert.NotEmpty(t, step)
+			assert.NoError(t, err)
+			assert.IsType(t, newTestStep("foo"), step)
+			assert.Equal(t, "foo", step.Name())
 		})
 	})
 }
