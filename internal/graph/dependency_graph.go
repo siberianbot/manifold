@@ -15,6 +15,10 @@ func (d *DependencyGraph) Root() Node {
 	return d.root
 }
 
+func (d *DependencyGraph) Nodes() []Node {
+	return d.nodes
+}
+
 func (d *DependencyGraph) Descendants(node Node) []Node {
 	descendants := make([]Node, 0)
 
@@ -49,8 +53,11 @@ func (d *DependencyGraph) FindByPath(path string) Node {
 	return nil
 }
 
+func (d *DependencyGraph) AddNode(node Node) {
+	d.nodes = append(d.nodes, node)
+}
+
 func (d *DependencyGraph) AddDescendant(parent Node, child Node) {
-	d.nodes = append(d.nodes, child)
 	d.links = append(d.links, link{parent: parent, child: child})
 }
 

@@ -40,8 +40,10 @@ func TestDependencyGraph(t *testing.T) {
 		descendant := &testNode{}
 		graph := NewDependencyGraph(root)
 
-		graph.AddDescendant(root, descendant)
+		graph.AddNode(descendant)
 		assert.Len(t, graph.nodes, 2)
+
+		graph.AddDescendant(root, descendant)
 		assert.Len(t, graph.links, 1)
 
 		descendants := graph.Descendants(root)
