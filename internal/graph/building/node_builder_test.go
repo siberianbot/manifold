@@ -10,7 +10,7 @@ import (
 
 func TestNodeBuilder(t *testing.T) {
 	t.Run("NewNodeBuilder", func(t *testing.T) {
-		nodeBuilder := NewNodeBuilder()
+		nodeBuilder := NewNodeBuilder(nil)
 
 		assert.NotNil(t, nodeBuilder)
 	})
@@ -21,7 +21,7 @@ func TestNodeBuilder(t *testing.T) {
 func testNodeBuilderFromPath(t *testing.T) {
 	t.Run("FileNotExists", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "invalid.yml")
-		nodeBuilder := NewNodeBuilder()
+		nodeBuilder := NewNodeBuilder(nil)
 
 		node, err := nodeBuilder.FromPath(path)
 
@@ -31,7 +31,7 @@ func testNodeBuilderFromPath(t *testing.T) {
 
 	t.Run("FileExistsButInvalid", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "invalid.yml")
-		nodeBuilder := NewNodeBuilder()
+		nodeBuilder := NewNodeBuilder(nil)
 
 		data := make([]byte, 1024)
 		rand.Read(data)
@@ -47,7 +47,7 @@ func testNodeBuilderFromPath(t *testing.T) {
 
 	t.Run("FileExistsAndValid", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "valid.yml")
-		nodeBuilder := NewNodeBuilder()
+		nodeBuilder := NewNodeBuilder(nil)
 
 		file, _ := os.Create(path)
 		_, _ = file.WriteString(`

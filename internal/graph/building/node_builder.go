@@ -5,15 +5,16 @@ import (
 	"manifold/internal/config/utils"
 	"manifold/internal/config/validation"
 	"manifold/internal/graph"
+	"manifold/internal/steps"
 	"os"
 )
 
 type NodeBuilder struct {
-	//
+	stepsProvider *steps.Provider
 }
 
-func NewNodeBuilder() *NodeBuilder {
-	return &NodeBuilder{}
+func NewNodeBuilder(stepsProvider *steps.Provider) *NodeBuilder {
+	return &NodeBuilder{stepsProvider: stepsProvider}
 }
 
 func (builder *NodeBuilder) FromPath(path string) (graph.Node, error) {
@@ -42,5 +43,5 @@ func (builder *NodeBuilder) FromPath(path string) (graph.Node, error) {
 		return nil, validationErr
 	}
 
-	return graph.FromConfiguration(cfg, path), nil
+	return graph.FromConfiguration(cfg, path, builder.stepsProvider)
 }

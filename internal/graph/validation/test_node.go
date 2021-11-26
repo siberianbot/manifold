@@ -3,10 +3,19 @@ package validation
 import (
 	"fmt"
 	"manifold/internal/graph"
+	"manifold/internal/steps"
 )
 
 type testNode struct {
 	num int
+}
+
+func (n testNode) Build(provider *steps.Provider) error {
+	return nil
+}
+
+func (n testNode) IsBuilt() bool {
+	return false
 }
 
 func (n testNode) Path() string {

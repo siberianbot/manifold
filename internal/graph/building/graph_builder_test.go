@@ -3,6 +3,7 @@ package building
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"manifold/internal/steps"
 	"os"
 	"path/filepath"
 	"testing"
@@ -10,7 +11,8 @@ import (
 
 func TestGraphBuilder(t *testing.T) {
 	t.Run("NewGraphBuilder", func(t *testing.T) {
-		nodeBuilder := NewNodeBuilder()
+		stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+		nodeBuilder := NewNodeBuilder(stepsProvider)
 		graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 		assert.NotNil(t, graphBuilder)
@@ -30,7 +32,8 @@ project:
 			_, _ = fooFile.WriteString(fooContent)
 			_ = fooFile.Close()
 
-			nodeBuilder := NewNodeBuilder()
+			stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+			nodeBuilder := NewNodeBuilder(stepsProvider)
 			graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 			dependencyGraph, err := graphBuilder.Build(fooPath)
@@ -75,7 +78,8 @@ project:
 			_, _ = barFile.WriteString(barContent)
 			_ = barFile.Close()
 
-			nodeBuilder := NewNodeBuilder()
+			stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+			nodeBuilder := NewNodeBuilder(stepsProvider)
 			graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 			dependencyGraph, err := graphBuilder.Build(fooPath)
@@ -140,7 +144,8 @@ project:
 			_, _ = bazFile.WriteString(bazContent)
 			_ = bazFile.Close()
 
-			nodeBuilder := NewNodeBuilder()
+			stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+			nodeBuilder := NewNodeBuilder(stepsProvider)
 			graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 			dependencyGraph, err := graphBuilder.Build(fooPath)
@@ -215,7 +220,8 @@ project:
 			_, _ = barFile.WriteString(barContent)
 			_ = barFile.Close()
 
-			nodeBuilder := NewNodeBuilder()
+			stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+			nodeBuilder := NewNodeBuilder(stepsProvider)
 			graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 			dependencyGraph, err := graphBuilder.Build(fooPath)
@@ -276,7 +282,8 @@ project:
 			_, _ = fooFile.WriteString(fooContent)
 			_ = fooFile.Close()
 
-			nodeBuilder := NewNodeBuilder()
+			stepsProvider := steps.NewProvider(steps.NewProviderOptions())
+			nodeBuilder := NewNodeBuilder(stepsProvider)
 			graphBuilder := NewGraphBuilder(GraphBuilderOptions{NodeBuilder: nodeBuilder})
 
 			dependencyGraph, err := graphBuilder.Build(fooPath)
