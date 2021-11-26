@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"manifold/internal/build"
+	"manifold/internal/backend"
 	"os"
 )
 
@@ -12,16 +12,19 @@ func main() {
 }
 
 func realMain() int {
+	b := backend.NewBackend()
+
 	switch {
 	case len(os.Args) > 2 && os.Args[1] == "build":
-		var path string
+		buildOptions := backend.BuildOptions{}
+
 		if len(os.Args) == 2 {
-			path, _ = os.Getwd()
+			buildOptions.Path, _ = os.Getwd()
 		} else {
-			path = os.Args[2]
+			buildOptions.Path = os.Args[2]
 		}
 
-		err := build.Build(path)
+		err := b.Build(buildOptions)
 
 		if err != nil {
 			log.Println(fmt.Sprintf("build failed: %v", err))
