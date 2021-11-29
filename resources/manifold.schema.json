@@ -2,8 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://siberianbot.me/manifold/schema",
 
-  "title": "Manifold Document",
-  "description": "Manifold document schema",
+  "title": "Manifold Configuration",
+  "description": "Schema of Manifold configuration file",
   "type": "object",
 
   "oneOf": [
@@ -93,17 +93,17 @@
     "dependency": {
       "type": "object",
       "oneOf": [
-        { "$ref": "#/$defs/workspaceDependency" },
+        { "$ref": "#/$defs/nameDependency" },
         { "$ref": "#/$defs/pathDependency" }
       ]
     },
 
-    "workspaceDependency": {
+    "nameDependency": {
       "type": "object",
       "properties": {
         "project": {
           "$ref": "#/$defs/name",
-          "description": "A name of dependent project, included in workspace"
+          "description": "A name of project dependency, included in workspace"
         }
       },
       "required": ["project"]
@@ -114,7 +114,7 @@
       "properties": {
         "path": {
           "type": "string",
-          "description": "A path to dependent project, located somewhere outside of project directory"
+          "description": "A path to project dependency, located somewhere outside of project directory"
         }
       },
       "required": ["path"]
@@ -122,14 +122,7 @@
 
     "step": {
       "type": "object",
-      "oneOf": [{ "$ref": "#/$defs/cmdStep" }],
-
-      "properties": {
-        "stage": {
-          "type": "string",
-          "description": "A name of execution stage"
-        }
-      }
+      "oneOf": [{ "$ref": "#/$defs/cmdStep" }, { "$ref": "#/$defs/dotnetStep" }]
     },
 
     "cmdStep": {
@@ -141,6 +134,17 @@
         }
       },
       "required": ["cmd"]
+    },
+
+    "dotnetStep": {
+      "type": "object",
+      "properties": {
+        "dotnet": {
+          "type": "string",
+          "description": "Path to .NET project or solution"
+        }
+      },
+      "required": ["dotnet"]
     }
   }
 }
