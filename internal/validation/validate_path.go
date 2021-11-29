@@ -1,16 +1,17 @@
 package validation
 
 import (
+	"manifold/internal/errors"
 	"manifold/internal/utils"
 )
 
 func ValidatePath(path string) error {
 	if path == "" {
-		return NewError(EmptyPath)
+		return errors.NewError(EmptyPath)
 	}
 
 	if !utils.Exists(path) {
-		return NewError(InvalidPath, path)
+		return errors.NewError(InvalidPath, path)
 	}
 
 	return nil

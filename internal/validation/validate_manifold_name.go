@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"manifold/internal/errors"
 	"regexp"
 )
 
@@ -18,11 +19,11 @@ var nameRegexp = newNameRegexp()
 
 func ValidateManifoldName(name string) error {
 	if name == "" {
-		return NewError(EmptyManifoldName)
+		return errors.NewError(EmptyManifoldName)
 	}
 
 	if !nameRegexp.MatchString(name) {
-		return NewError(InvalidManifoldName, name, nameRegexp)
+		return errors.NewError(InvalidManifoldName, name, nameRegexp)
 	}
 
 	return nil

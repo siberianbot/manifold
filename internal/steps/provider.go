@@ -3,7 +3,7 @@ package steps
 import (
 	"fmt"
 	"manifold/internal/config"
-	"manifold/internal/validation"
+	"manifold/internal/errors"
 )
 
 type Provider struct {
@@ -19,7 +19,7 @@ func NewProvider(options *ProviderOptions) *Provider {
 
 func (provider *Provider) CreateFrom(configStep config.Step) (Step, error) {
 	if len(configStep) == 0 {
-		return nil, validation.NewError(EmptyStep)
+		return nil, errors.NewError(EmptyStep)
 	}
 
 	for name, factory := range provider.options.Factories {
@@ -32,13 +32,13 @@ func (provider *Provider) CreateFrom(configStep config.Step) (Step, error) {
 		step, stepErr := factory(data)
 
 		if stepErr != nil {
-			return nil, validation.NewError(StepFailed, name, stepErr)
+			return nil, errors.NewError(StepFailed, name, stepErr)
 		}
 
 		return step, nil
 	}
 
-	return nil, validation.NewError(StepNotMatched)
+	return nil, errors.NewError(StepNotMatched)
 }
 
 func (provider *Provider) Execute(step Step) error {

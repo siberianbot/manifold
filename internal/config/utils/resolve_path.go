@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"manifold/internal/errors"
 	"manifold/internal/utils"
-	"manifold/internal/validation"
 	"os"
 	"path/filepath"
 )
@@ -41,5 +41,5 @@ func ResolvePath(path string) (string, error) {
 		return yamlPath, nil
 	}
 
-	return "", validation.NewError(NotManifoldPath, absPath)
+	return "", errors.NewError(NotManifoldPath, absPath)
 }

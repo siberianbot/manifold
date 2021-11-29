@@ -4,8 +4,8 @@ import (
 	"github.com/google/shlex"
 	"io"
 	"log"
+	"manifold/internal/errors"
 	"manifold/internal/steps"
-	"manifold/internal/validation"
 	"os/exec"
 )
 
@@ -42,7 +42,7 @@ func newStep(definition interface{}) (steps.Step, error) {
 	cmd, ok := definition.(string)
 
 	if !ok || cmd == "" {
-		return nil, validation.NewError(StepIsInvalid)
+		return nil, errors.NewError(StepIsInvalid)
 	}
 
 	step := new(commandStep)

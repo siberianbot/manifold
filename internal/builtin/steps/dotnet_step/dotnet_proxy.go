@@ -3,8 +3,8 @@ package dotnet_step
 import (
 	"io"
 	"log"
+	"manifold/internal/errors"
 	"manifold/internal/steps"
-	"manifold/internal/validation"
 	"os/exec"
 )
 
@@ -28,7 +28,7 @@ func (dotnetProxy) newStep(definition interface{}) (steps.Step, error) {
 	path, ok := definition.(string)
 
 	if !ok || path == "" {
-		return nil, validation.NewError("dotnet step should be a valid path to project or solution file")
+		return nil, errors.NewError("dotnet step should be a valid path to project or solution file")
 	}
 
 	return &dotnetStep{path: path}, nil

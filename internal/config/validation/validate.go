@@ -2,6 +2,7 @@ package validation
 
 import (
 	"manifold/internal/config"
+	"manifold/internal/errors"
 	"manifold/internal/utils"
 	"manifold/internal/validation"
 	"path/filepath"
@@ -16,7 +17,7 @@ func Validate(cfg *config.Configuration, path string) error {
 func validateConfiguration(cfg *config.Configuration, dir string) error {
 	switch {
 	case cfg.ProjectTarget != nil && cfg.WorkspaceTarget != nil:
-		return validation.NewError(AmbiguousConfiguration)
+		return errors.NewError(AmbiguousConfiguration)
 
 	case cfg.ProjectTarget != nil:
 		return validateProject(cfg.ProjectTarget, dir)
@@ -25,13 +26,13 @@ func validateConfiguration(cfg *config.Configuration, dir string) error {
 		return validateWorkspace(cfg.WorkspaceTarget, dir)
 
 	default:
-		return validation.NewError(EmptyConfiguration)
+		return errors.NewError(EmptyConfiguration)
 	}
 }
 
 func validateProject(project *config.ProjectTarget, dir string) error {
 	if err := validation.ValidateManifoldName(project.Name); err != nil {
-		return validation.NewError(InvalidProject, err)
+		return errors.NewError(InvalidProject, err)
 	}
 
 	for _, dependency := range project.ProjectDependencies {
@@ -45,7 +46,7 @@ func validateProject(project *config.ProjectTarget, dir string) error {
 
 func validateWorkspace(workspace *config.WorkspaceTarget, dir string) error {
 	if err := validation.ValidateManifoldName(workspace.Name); err != nil {
-		return validation.NewError(InvalidWorkspace, err)
+		return errors.NewError(InvalidWorkspace, err)
 	}
 
 	for _, include := range workspace.Includes {
@@ -60,11 +61,11 @@ func validateWorkspace(workspace *config.WorkspaceTarget, dir string) error {
 func validateProjectDependency(dependency config.ProjectDependency, dir string) error {
 	switch {
 	case dependency.Project != "" && dependency.Path != "":
-		return validation.NewError(AmbiguousProjectDependency)
+		return errors.NewError(AmbiguousProjectDependency)
 
 	case dependency.Project != "":
 		if err := validation.ValidateManifoldName(dependency.Project); err != nil {
-			return validation.NewError(InvalidProjectDependency, err)
+			return errors.NewError(InvalidProjectDependency, err)
 		}
 
 		return nil
@@ -73,25 +74,25 @@ func validateProjectDependency(dependency config.ProjectDependency, dir string) 
 		path := utils.BuildPath(dir, dependency.Path)
 
 		if err := validation.ValidatePath(path); err != nil {
-			return validation.NewError(InvalidProjectDependency, err)
+			return errors.NewError(InvalidProjectDependency, err)
 		}
 
 		return nil
 
 	default:
-		return validation.NewError(EmptyProjectDependency)
+		return errors.NewError(EmptyProjectDependency)
 	}
 }
 
 func validateInclude(include string, dir string) error {
 	if include == "" {
-		return validation.NewError(EmptyWorkspaceInclude)
+		return errors.NewError(EmptyWorkspaceInclude)
 	}
 
 	path := utils.BuildPath(dir, include)
 
 	if err := validation.ValidatePath(path); err != nil {
-		return validation.NewError(InvalidWorkspaceInclude, err)
+		return errors.NewError(InvalidWorkspaceInclude, err)
 	}
 
 	return nil

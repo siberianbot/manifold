@@ -2,9 +2,9 @@ package building
 
 import (
 	"manifold/internal/config/utils"
+	"manifold/internal/errors"
 	"manifold/internal/graph"
-	graphValidation "manifold/internal/graph/validation"
-	validation "manifold/internal/validation"
+	"manifold/internal/graph/validation"
 )
 
 const (
@@ -34,7 +34,7 @@ func (builder *GraphBuilder) Build(path string) (*graph.DependencyGraph, error) 
 		return nil, processNodeErr
 	}
 
-	cycleErr := graphValidation.NewCycleDetector(dependencyGraph).Validate()
+	cycleErr := validation.NewCycleDetector(dependencyGraph).Validate()
 
 	if cycleErr != nil {
 		return nil, cycleErr
@@ -93,7 +93,7 @@ func (builder *GraphBuilder) processNode(node graph.Node, dependencyGraph *graph
 		dependencyNode := dependencyGraph.FindByName(namedDependency.Value())
 
 		if dependencyNode == nil {
-			return validation.NewError(UnknownTarget, namedDependency.Value())
+			return errors.NewError(UnknownTarget, namedDependency.Value())
 		}
 
 		dependencyGraph.AddDescendant(node, dependencyNode)

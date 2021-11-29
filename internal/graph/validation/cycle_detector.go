@@ -2,8 +2,8 @@ package validation
 
 import (
 	"fmt"
+	"manifold/internal/errors"
 	"manifold/internal/graph"
-	"manifold/internal/validation"
 	"strings"
 )
 
@@ -121,7 +121,7 @@ func (detector *CycleDetector) Validate() error {
 			}
 		}
 
-		return validation.NewError(CyclesDetected, strings.Join(cyclesStrs, "\n"))
+		return errors.NewError(CyclesDetected, strings.Join(cyclesStrs, "\n"))
 	}
 
 	return nil
