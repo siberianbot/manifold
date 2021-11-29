@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"manifold/internal/builtin/command_step"
+	"manifold/internal/builtin/steps/command_step"
 	"manifold/internal/graph"
 	"manifold/internal/graph/building"
 	"manifold/internal/steps"
