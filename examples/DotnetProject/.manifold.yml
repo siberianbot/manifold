@@ -1,0 +1,4 @@
+project:
+  name: DotnetProject
+  steps:
+  - dotnet: ./DotnetProject.csproj
