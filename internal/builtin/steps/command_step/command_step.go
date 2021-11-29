@@ -22,8 +22,8 @@ func (commandStep) Name() string {
 	return Name
 }
 
-func executeStep(step steps.Step) error {
-	cmdArgs, _ := shlex.Split(step.(commandStep).cmd)
+func executeStep(step steps.Step, _ *steps.ExecutorContext) error {
+	cmdArgs, _ := shlex.Split(step.(*commandStep).cmd)
 
 	cmd := exec.Command(cmdArgs[0])
 

@@ -75,8 +75,12 @@ func (node *projectNode) Dependencies() []NodeDependency {
 }
 
 func (node *projectNode) Build(stepsProvider *steps.Provider) error {
+	context := &steps.ExecutorContext{
+		Dir: filepath.Dir(node.path),
+	}
+
 	for _, step := range node.steps {
-		err := stepsProvider.Execute(step)
+		err := stepsProvider.Execute(step, context)
 
 		if err != nil {
 			return err

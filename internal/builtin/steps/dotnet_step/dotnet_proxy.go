@@ -5,6 +5,7 @@ import (
 	"log"
 	"manifold/internal/errors"
 	"manifold/internal/steps"
+	"manifold/internal/utils"
 	"os/exec"
 )
 
@@ -34,8 +35,9 @@ func (dotnetProxy) newStep(definition interface{}) (steps.Step, error) {
 	return &dotnetStep{path: path}, nil
 }
 
-func (dotnetProxy) executeStep(step steps.Step) error {
-	dotnetCmd := exec.Command("dotnet", "build", step.(dotnetStep).path)
+func (dotnetProxy) executeStep(step steps.Step, context *steps.ExecutorContext) error {
+	targetPath := utils.BuildPath(context.Dir, step.(*dotnetStep).path)
+	dotnetCmd := exec.Command("dotnet", "build", targetPath)
 
 	mw := io.MultiWriter(log.Writer())
 	dotnetCmd.Stdout = mw

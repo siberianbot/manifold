@@ -41,12 +41,12 @@ func (provider *Provider) CreateFrom(configStep config.Step) (Step, error) {
 	return nil, errors.NewError(StepNotMatched)
 }
 
-func (provider *Provider) Execute(step Step) error {
+func (provider *Provider) Execute(step Step, context *ExecutorContext) error {
 	executor := provider.options.Executors[step.Name()]
 
 	if executor == nil {
 		panic(fmt.Sprintf("no executor for %s", step.Name()))
 	}
 
-	return executor(step)
+	return executor(step, context)
 }
