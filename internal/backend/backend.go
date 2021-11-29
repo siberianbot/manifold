@@ -2,6 +2,7 @@ package backend
 
 import (
 	"manifold/internal/builtin/steps/command_step"
+	"manifold/internal/builtin/steps/dotnet_step"
 	"manifold/internal/graph"
 	"manifold/internal/graph/building"
 	"manifold/internal/steps"
@@ -23,6 +24,7 @@ type backend struct {
 func NewBackend() Backend {
 	stepsProviderOptions := steps.NewProviderOptions()
 	command_step.PopulateOptions(stepsProviderOptions)
+	dotnet_step.PopulateOptions(stepsProviderOptions)
 
 	stepsProvider := steps.NewProvider(stepsProviderOptions)
 	graphBuilderOptions := building.GraphBuilderOptions{
