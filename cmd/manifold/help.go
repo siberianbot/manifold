@@ -1,16 +1,45 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/mitchellh/cli"
+	"sort"
+	"strings"
+)
 
-func help() string {
-	return fmt.Sprintf(`
-Usage: manifold <subcommand> [args]
+func helpFunc(cmdFactories map[string]cli.CommandFactory) string {
+	content := `%s
 
-build <path>    - Build project or workspace. Path should be valid Manifold 
-                  configuration. Current directory is used if path is not 
-                  defined.
+Commands:
+%s
 
-Manifold %s
-GitHub: %s
-`, Version, Link)
+%s`
+
+	commands := make([]string, 0)
+	keys := make([]string, 0)
+
+	for key := range cmdFactories {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		cmd, cmdErr := cmdFactories[key]()
+
+		if cmdErr != nil {
+			panic(cmdErr)
+		}
+
+		commands = append(commands, fmt.Sprintf("  %-13s %s", key, cmd.Synopsis()))
+	}
+
+	return fmt.Sprintf(content, usage(UsagePlaceholder, UsagePlaceholderArgs), strings.Join(commands, "\n"), version())
+}
+
+func version() string {
+	return fmt.Sprintf(VersionBody, Version, GitHubLink)
+}
+
+func usage(name string, args string) string {
+	return fmt.Sprintf(Usage, Name, name, args)
 }

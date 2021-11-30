@@ -1,6 +1,22 @@
 package main
 
 const (
-	Version = "v0.2"
-	Link    = "https://github.com/siberianbot/manifold/"
+	Name       = "manifold"
+	Version    = "v0.3"
+	GitHubLink = "https://github.com/siberianbot/manifold/"
+)
+
+const (
+	VersionBody = `Manifold %s
+GitHub: %s
+`
+
+	Usage                = "Usage: %s %s %s"
+	UsagePlaceholder     = "<subcommand>"
+	UsagePlaceholderArgs = "[args]"
+	UsageBuildArgs       = "[args] <path...>"
+)
+
+const (
+	BuildCommandName = "build"
 )
