@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/stretchr/testify/assert"
+	"manifold/internal/mock"
 	"manifold/internal/step"
 	"testing"
 )
@@ -44,14 +45,12 @@ func TestExecutorNotExists(t *testing.T) {
 }
 
 func TestFactoryExists(t *testing.T) {
-	factoryFn := func(_ interface{}) (step.Step, error) {
-		return nil, nil
-	}
+	factory := new(mock.StepFactory)
 	factoryName := "foo"
 
 	options := Options{
 		Factories: map[string]step.Factory{
-			factoryName: factoryFn,
+			factoryName: factory,
 		},
 		Executors: map[string]step.Executor{},
 	}
@@ -60,20 +59,19 @@ func TestFactoryExists(t *testing.T) {
 
 	assert.NotEmpty(t, provider)
 
-	factory := provider.FactoryFor(factoryName)
-	assert.NotNil(t, factory)
+	f := provider.FactoryFor(factoryName)
+	assert.NotNil(t, f)
+	assert.Equal(t, factory, f)
 }
 
 func TestExecutorExists(t *testing.T) {
-	executorFn := func(_ step.Step, _ *step.ExecutorContext) error {
-		return nil
-	}
+	executor := new(mock.StepExecutor)
 	executorName := "foo"
 
 	options := Options{
 		Factories: map[string]step.Factory{},
 		Executors: map[string]step.Executor{
-			executorName: executorFn,
+			executorName: executor,
 		},
 	}
 
@@ -81,6 +79,6 @@ func TestExecutorExists(t *testing.T) {
 
 	assert.NotEmpty(t, provider)
 
-	executor := provider.ExecutorFor(executorName)
-	assert.NotNil(t, executor)
+	e := provider.ExecutorFor(executorName)
+	assert.NotNil(t, e)
 }
