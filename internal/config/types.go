@@ -8,7 +8,7 @@ type Configuration struct {
 type ProjectTarget struct {
 	Name                string              `yaml:"name"`
 	ProjectDependencies []ProjectDependency `yaml:"dependencies"`
-	Steps               []Step              `yaml:"steps"`
+	Steps               []StepDefinition    `yaml:"steps"`
 }
 
 type ProjectDependency struct {
@@ -16,9 +16,11 @@ type ProjectDependency struct {
 	Project string `yaml:"project"`
 }
 
-type Step map[string]interface{}
+type StepDefinition map[string]interface{}
 
 type WorkspaceTarget struct {
-	Name     string   `yaml:"name"`
-	Includes []string `yaml:"includes"`
+	Name     string              `yaml:"name"`
+	Includes []IncludeDefinition `yaml:"includes"`
 }
+
+type IncludeDefinition string

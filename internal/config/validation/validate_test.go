@@ -176,7 +176,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 		dir := ""
 		include := ""
 
-		err := validateInclude(include, dir)
+		err := validateInclude(config.IncludeDefinition(include), dir)
 
 		assert.EqualError(t, err, EmptyWorkspaceInclude)
 	})
@@ -185,7 +185,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 		dir := ""
 		include := "foo"
 
-		err := validateInclude(include, dir)
+		err := validateInclude(config.IncludeDefinition(include), dir)
 
 		assert.EqualError(t, err, fmt.Sprintf(InvalidWorkspaceInclude, fmt.Sprintf(validation.InvalidPath, include)))
 	})
@@ -196,7 +196,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 
 		_ = os.Mkdir(filepath.Join(dir, include), os.ModeDir)
 
-		err := validateInclude(include, dir)
+		err := validateInclude(config.IncludeDefinition(include), dir)
 
 		assert.NoError(t, err)
 	})

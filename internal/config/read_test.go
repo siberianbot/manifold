@@ -89,7 +89,7 @@ workspace:
 	})
 }
 
-func containsNamedStep(steps []Step, name string) bool {
+func containsNamedStep(steps []StepDefinition, name string) bool {
 	for _, step := range steps {
 		if step[name] == name {
 			return true
@@ -99,7 +99,7 @@ func containsNamedStep(steps []Step, name string) bool {
 	return false
 }
 
-func containsInclude(includes []string, include string) bool {
+func containsInclude(includes []IncludeDefinition, include IncludeDefinition) bool {
 	for _, inc := range includes {
 		if inc == include {
 			return true

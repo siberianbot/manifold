@@ -84,12 +84,12 @@ func validateProjectDependency(dependency config.ProjectDependency, dir string) 
 	}
 }
 
-func validateInclude(include string, dir string) error {
+func validateInclude(include config.IncludeDefinition, dir string) error {
 	if include == "" {
 		return errors.NewError(EmptyWorkspaceInclude)
 	}
 
-	path := utils.BuildPath(dir, include)
+	path := utils.BuildPath(dir, string(include))
 
 	if err := validation.ValidatePath(path); err != nil {
 		return errors.NewError(InvalidWorkspaceInclude, err)
