@@ -1,4 +1,4 @@
-package steps
+package step
 
 type Step interface {
 	Name() string
