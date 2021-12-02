@@ -2,6 +2,7 @@ package mock
 
 import (
 	"github.com/stretchr/testify/mock"
+	"manifold/internal/config"
 	"manifold/internal/step"
 )
 
@@ -69,4 +70,30 @@ type StepExecutor struct {
 
 func (m *StepExecutor) Execute(context step.ExecutorContext) error {
 	return m.Called(context).Error(0)
+}
+
+type StepBuilder struct {
+	mock.Mock
+}
+
+func (m *StepBuilder) FromConfig(definition config.ProjectStep) (step.Step, error) {
+	args := m.Called(definition)
+
+	var result step.Step
+
+	if args.Get(0) == nil {
+		result = nil
+	} else {
+		result = args.Get(0).(step.Step)
+	}
+
+	var err error
+
+	if args.Get(1) == nil {
+		err = nil
+	} else {
+		err = args.Error(1)
+	}
+
+	return result, err
 }
