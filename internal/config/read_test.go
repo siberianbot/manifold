@@ -47,20 +47,20 @@ project:
 		assert.NotEmpty(t, configuration)
 		assert.NoError(t, err)
 
-		assert.NotEmpty(t, configuration.ProjectTarget)
+		assert.NotEmpty(t, configuration.Project)
 
-		assert.Equal(t, "foo", configuration.ProjectTarget.Name)
+		assert.Equal(t, "foo", configuration.Project.Name)
 
-		assert.NotEmpty(t, configuration.ProjectTarget.Steps)
-		assert.Len(t, configuration.ProjectTarget.Steps, 3)
-		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "foo"), "configuration.ProjectTarget.Steps doesn't contains foo")
-		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "bar"), "configuration.ProjectTarget.Steps doesn't contains bar")
-		assert.True(t, containsNamedStep(configuration.ProjectTarget.Steps, "baz"), "configuration.ProjectTarget.Steps doesn't contains baz")
+		assert.NotEmpty(t, configuration.Project.Steps)
+		assert.Len(t, configuration.Project.Steps, 3)
+		assert.True(t, containsNamedStep(configuration.Project.Steps, "foo"), "configuration.Project.Steps doesn't contains foo")
+		assert.True(t, containsNamedStep(configuration.Project.Steps, "bar"), "configuration.Project.Steps doesn't contains bar")
+		assert.True(t, containsNamedStep(configuration.Project.Steps, "baz"), "configuration.Project.Steps doesn't contains baz")
 
-		assert.NotEmpty(t, configuration.ProjectTarget.ProjectDependencies)
-		assert.Len(t, configuration.ProjectTarget.ProjectDependencies, 2)
-		assert.True(t, containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "", "bar"), "configuration.ProjectTarget.ProjectDependencies doesn't contains project bar")
-		assert.True(t, containsProjectDependency(configuration.ProjectTarget.ProjectDependencies, "baz", ""), "configuration.ProjectTarget.ProjectDependencies doesn't contains path baz")
+		assert.NotEmpty(t, configuration.Project.Dependencies)
+		assert.Len(t, configuration.Project.Dependencies, 2)
+		assert.True(t, containsProjectDependency(configuration.Project.Dependencies, "", "bar"), "configuration.Project.Dependencies doesn't contains project bar")
+		assert.True(t, containsProjectDependency(configuration.Project.Dependencies, "baz", ""), "configuration.Project.Dependencies doesn't contains path baz")
 	})
 
 	t.Run("WorkspaceConfig", func(t *testing.T) {
@@ -78,18 +78,18 @@ workspace:
 		assert.NotEmpty(t, configuration)
 		assert.NoError(t, err)
 
-		assert.NotEmpty(t, configuration.WorkspaceTarget)
+		assert.NotEmpty(t, configuration.Workspace)
 
-		assert.Equal(t, "foo", configuration.WorkspaceTarget.Name)
+		assert.Equal(t, "foo", configuration.Workspace.Name)
 
-		assert.NotEmpty(t, configuration.WorkspaceTarget.Includes)
-		assert.Len(t, configuration.WorkspaceTarget.Includes, 2)
-		assert.True(t, containsInclude(configuration.WorkspaceTarget.Includes, "bar"), "configuration.WorkspaceTarget.Includes doesn't contains bar")
-		assert.True(t, containsInclude(configuration.WorkspaceTarget.Includes, "baz"), "configuration.WorkspaceTarget.Includes doesn't contains baz")
+		assert.NotEmpty(t, configuration.Workspace.Includes)
+		assert.Len(t, configuration.Workspace.Includes, 2)
+		assert.True(t, containsInclude(configuration.Workspace.Includes, "bar"), "configuration.Workspace.Includes doesn't contains bar")
+		assert.True(t, containsInclude(configuration.Workspace.Includes, "baz"), "configuration.Workspace.Includes doesn't contains baz")
 	})
 }
 
-func containsNamedStep(steps []StepDefinition, name string) bool {
+func containsNamedStep(steps []ProjectStep, name string) bool {
 	for _, step := range steps {
 		if step[name] == name {
 			return true
@@ -99,7 +99,7 @@ func containsNamedStep(steps []StepDefinition, name string) bool {
 	return false
 }
 
-func containsInclude(includes []IncludeDefinition, include IncludeDefinition) bool {
+func containsInclude(includes []WorkspaceInclude, include WorkspaceInclude) bool {
 	for _, inc := range includes {
 		if inc == include {
 			return true

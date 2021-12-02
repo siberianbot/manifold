@@ -1,14 +1,14 @@
 package config
 
 type Configuration struct {
-	ProjectTarget   *ProjectTarget   `yaml:"project"`
-	WorkspaceTarget *WorkspaceTarget `yaml:"workspace"`
+	Project   *Project   `yaml:"project"`
+	Workspace *Workspace `yaml:"workspace"`
 }
 
-type ProjectTarget struct {
-	Name                string              `yaml:"name"`
-	ProjectDependencies []ProjectDependency `yaml:"dependencies"`
-	Steps               []StepDefinition    `yaml:"steps"`
+type Project struct {
+	Name         string              `yaml:"name"`
+	Dependencies []ProjectDependency `yaml:"dependencies"`
+	Steps        []ProjectStep       `yaml:"steps"`
 }
 
 type ProjectDependency struct {
@@ -16,11 +16,11 @@ type ProjectDependency struct {
 	Project string `yaml:"project"`
 }
 
-type StepDefinition map[string]interface{}
+type ProjectStep map[string]interface{}
 
-type WorkspaceTarget struct {
-	Name     string              `yaml:"name"`
-	Includes []IncludeDefinition `yaml:"includes"`
+type Workspace struct {
+	Name     string             `yaml:"name"`
+	Includes []WorkspaceInclude `yaml:"includes"`
 }
 
-type IncludeDefinition string
+type WorkspaceInclude string

@@ -15,7 +15,7 @@ const (
 )
 
 type Interface interface {
-	FromDefinition(definition config.StepDefinition) (step.Step, error)
+	FromConfig(definition config.ProjectStep) (step.Step, error)
 }
 
 type builder struct {
@@ -26,7 +26,7 @@ func NewBuilder(provider stepProvider.Interface) Interface {
 	return &builder{provider: provider}
 }
 
-func (b *builder) FromDefinition(definition config.StepDefinition) (step.Step, error) {
+func (b *builder) FromConfig(definition config.ProjectStep) (step.Step, error) {
 	if len(definition) == 0 {
 		return nil, errors.NewError(emptyStep)
 	}

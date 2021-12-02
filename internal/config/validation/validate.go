@@ -16,26 +16,26 @@ func Validate(cfg *config.Configuration, path string) error {
 
 func validateConfiguration(cfg *config.Configuration, dir string) error {
 	switch {
-	case cfg.ProjectTarget != nil && cfg.WorkspaceTarget != nil:
+	case cfg.Project != nil && cfg.Workspace != nil:
 		return errors.NewError(AmbiguousConfiguration)
 
-	case cfg.ProjectTarget != nil:
-		return validateProject(cfg.ProjectTarget, dir)
+	case cfg.Project != nil:
+		return validateProject(cfg.Project, dir)
 
-	case cfg.WorkspaceTarget != nil:
-		return validateWorkspace(cfg.WorkspaceTarget, dir)
+	case cfg.Workspace != nil:
+		return validateWorkspace(cfg.Workspace, dir)
 
 	default:
 		return errors.NewError(EmptyConfiguration)
 	}
 }
 
-func validateProject(project *config.ProjectTarget, dir string) error {
+func validateProject(project *config.Project, dir string) error {
 	if err := validation.ValidateManifoldName(project.Name); err != nil {
 		return errors.NewError(InvalidProject, err)
 	}
 
-	for _, dependency := range project.ProjectDependencies {
+	for _, dependency := range project.Dependencies {
 		if err := validateProjectDependency(dependency, dir); err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func validateProject(project *config.ProjectTarget, dir string) error {
 	return nil
 }
 
-func validateWorkspace(workspace *config.WorkspaceTarget, dir string) error {
+func validateWorkspace(workspace *config.Workspace, dir string) error {
 	if err := validation.ValidateManifoldName(workspace.Name); err != nil {
 		return errors.NewError(InvalidWorkspace, err)
 	}
@@ -84,7 +84,7 @@ func validateProjectDependency(dependency config.ProjectDependency, dir string) 
 	}
 }
 
-func validateInclude(include config.IncludeDefinition, dir string) error {
+func validateInclude(include config.WorkspaceInclude, dir string) error {
 	if include == "" {
 		return errors.NewError(EmptyWorkspaceInclude)
 	}

@@ -12,13 +12,13 @@ import (
 func TestEmptyDefinition(t *testing.T) {
 	provider := new(mock.StepProvider)
 
-	definition := config.StepDefinition{}
+	definition := config.ProjectStep{}
 
 	builder := NewBuilder(provider)
 
 	assert.NotEmpty(t, builder)
 
-	result, err := builder.FromDefinition(definition)
+	result, err := builder.FromConfig(definition)
 
 	assert.Nil(t, result)
 	assert.EqualError(t, err, emptyStep)
@@ -32,11 +32,11 @@ func TestUnknownDefinition(t *testing.T) {
 
 	assert.NotEmpty(t, builder)
 
-	definition := config.StepDefinition{
+	definition := config.ProjectStep{
 		"foo": struct{}{},
 	}
 
-	result, err := builder.FromDefinition(definition)
+	result, err := builder.FromConfig(definition)
 
 	assert.Nil(t, result)
 	assert.EqualError(t, err, fmt.Sprintf(unknownStep, "foo"))
@@ -58,11 +58,11 @@ func TestValidDefinition(t *testing.T) {
 
 	assert.NotEmpty(t, builder)
 
-	definition := config.StepDefinition{
+	definition := config.ProjectStep{
 		"foo": stepValue,
 	}
 
-	result, err := builder.FromDefinition(definition)
+	result, err := builder.FromConfig(definition)
 
 	assert.NotNil(t, result)
 	assert.Equal(t, stepMock, result)
@@ -86,12 +86,12 @@ func TestAmbiguousDefinition(t *testing.T) {
 
 	assert.NotEmpty(t, builder)
 
-	definition := config.StepDefinition{
+	definition := config.ProjectStep{
 		"foo": stepValue,
 		"bar": stepValue,
 	}
 
-	result, err := builder.FromDefinition(definition)
+	result, err := builder.FromConfig(definition)
 
 	assert.Nil(t, result)
 	assert.EqualError(t, err, ambiguousStep)
@@ -113,11 +113,11 @@ func TestFailedToCreate(t *testing.T) {
 
 	assert.NotEmpty(t, builder)
 
-	definition := config.StepDefinition{
+	definition := config.ProjectStep{
 		"foo": stepValue,
 	}
 
-	result, err := builder.FromDefinition(definition)
+	result, err := builder.FromConfig(definition)
 
 	assert.Nil(t, result)
 	assert.EqualError(t, err, fmt.Sprintf(stepFactoryFailed, "foo", fooFactoryErr))

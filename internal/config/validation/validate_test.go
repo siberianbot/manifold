@@ -23,8 +23,8 @@ func TestValidateConfiguration(t *testing.T) {
 	t.Run("AmbiguousConfig", func(t *testing.T) {
 		dir := ""
 		cfg := config.Configuration{
-			ProjectTarget:   &config.ProjectTarget{},
-			WorkspaceTarget: &config.WorkspaceTarget{},
+			Project:   &config.Project{},
+			Workspace: &config.Workspace{},
 		}
 
 		err := validateConfiguration(&cfg, dir)
@@ -35,7 +35,7 @@ func TestValidateConfiguration(t *testing.T) {
 	t.Run("ValidProjectConfig", func(t *testing.T) {
 		dir := ""
 		cfg := config.Configuration{
-			ProjectTarget: &config.ProjectTarget{Name: "foo"},
+			Project: &config.Project{Name: "foo"},
 		}
 
 		err := validateConfiguration(&cfg, dir)
@@ -46,7 +46,7 @@ func TestValidateConfiguration(t *testing.T) {
 	t.Run("ValidWorkspaceConfig", func(t *testing.T) {
 		dir := ""
 		cfg := config.Configuration{
-			WorkspaceTarget: &config.WorkspaceTarget{Name: "foo"},
+			Workspace: &config.Workspace{Name: "foo"},
 		}
 
 		err := validateConfiguration(&cfg, dir)
@@ -59,7 +59,7 @@ func TestValidateProject(t *testing.T) {
 	t.Run("EmptyName", func(t *testing.T) {
 		name := ""
 		dir := ""
-		project := config.ProjectTarget{Name: name}
+		project := config.Project{Name: name}
 
 		err := validateProject(&project, dir)
 
@@ -69,7 +69,7 @@ func TestValidateProject(t *testing.T) {
 	t.Run("InvalidName", func(t *testing.T) {
 		name := "foo!"
 		dir := ""
-		project := config.ProjectTarget{Name: name}
+		project := config.Project{Name: name}
 
 		err := validateProject(&project, dir)
 
@@ -81,7 +81,7 @@ func TestValidateWorkspace(t *testing.T) {
 	t.Run("EmptyName", func(t *testing.T) {
 		name := ""
 		dir := ""
-		workspace := config.WorkspaceTarget{Name: name}
+		workspace := config.Workspace{Name: name}
 
 		err := validateWorkspace(&workspace, dir)
 
@@ -91,7 +91,7 @@ func TestValidateWorkspace(t *testing.T) {
 	t.Run("InvalidName", func(t *testing.T) {
 		name := "foo!"
 		dir := ""
-		workspace := config.WorkspaceTarget{Name: name}
+		workspace := config.Workspace{Name: name}
 
 		err := validateWorkspace(&workspace, dir)
 
@@ -176,7 +176,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 		dir := ""
 		include := ""
 
-		err := validateInclude(config.IncludeDefinition(include), dir)
+		err := validateInclude(config.WorkspaceInclude(include), dir)
 
 		assert.EqualError(t, err, EmptyWorkspaceInclude)
 	})
@@ -185,7 +185,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 		dir := ""
 		include := "foo"
 
-		err := validateInclude(config.IncludeDefinition(include), dir)
+		err := validateInclude(config.WorkspaceInclude(include), dir)
 
 		assert.EqualError(t, err, fmt.Sprintf(InvalidWorkspaceInclude, fmt.Sprintf(validation.InvalidPath, include)))
 	})
@@ -196,7 +196,7 @@ func TestValidateWorkspaceInclude(t *testing.T) {
 
 		_ = os.Mkdir(filepath.Join(dir, include), os.ModeDir)
 
-		err := validateInclude(config.IncludeDefinition(include), dir)
+		err := validateInclude(config.WorkspaceInclude(include), dir)
 
 		assert.NoError(t, err)
 	})
