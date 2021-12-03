@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"manifold/internal/config"
-	node2 "manifold/internal/graph/node"
-	"manifold/internal/mock"
+	"manifold/internal/graph/node"
+	"manifold/internal/mock/step"
 	"testing"
 )
 
 func TestProjectWithOnlyBasicFields(t *testing.T) {
-	stepBuilder := new(mock.StepBuilder)
+	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
 
@@ -24,19 +24,19 @@ func TestProjectWithOnlyBasicFields(t *testing.T) {
 		},
 	}
 
-	node, err := builder.FromConfig(name, cfg)
+	n, err := builder.FromConfig(name, cfg)
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, node)
-	assert.Equal(t, name, node.Name())
-	assert.Equal(t, name, node.Path())
-	assert.Len(t, node.Dependencies(), 0)
+	assert.NotEmpty(t, n)
+	assert.Equal(t, name, n.Name())
+	assert.Equal(t, name, n.Path())
+	assert.Len(t, n.Dependencies(), 0)
 
 	stepBuilder.AssertExpectations(t)
 }
 
 func TestProjectWithValidStep(t *testing.T) {
-	stepBuilder := new(mock.StepBuilder)
+	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
 
@@ -53,17 +53,17 @@ func TestProjectWithValidStep(t *testing.T) {
 		},
 	}
 
-	stepMock := new(mock.Step)
+	stepMock := new(step.Step)
 	stepBuilder.On("FromConfig", projectStep).Return(stepMock, nil)
 
-	node, err := builder.FromConfig(name, cfg)
+	n, err := builder.FromConfig(name, cfg)
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, node)
-	assert.Equal(t, name, node.Name())
-	assert.Equal(t, name, node.Path())
+	assert.NotEmpty(t, n)
+	assert.Equal(t, name, n.Name())
+	assert.Equal(t, name, n.Path())
 
-	projectNode := node.(*Node)
+	projectNode := n.(*Node)
 	assert.Len(t, projectNode.steps, 1)
 	assert.Equal(t, stepMock, projectNode.steps[0])
 
@@ -71,7 +71,7 @@ func TestProjectWithValidStep(t *testing.T) {
 }
 
 func TestProjectWithInvalidStep(t *testing.T) {
-	stepBuilder := new(mock.StepBuilder)
+	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
 
@@ -91,16 +91,16 @@ func TestProjectWithInvalidStep(t *testing.T) {
 	stepBuilderErr := errors.New("error")
 	stepBuilder.On("FromConfig", projectStep).Return(nil, stepBuilderErr)
 
-	node, err := builder.FromConfig(name, cfg)
+	n, err := builder.FromConfig(name, cfg)
 
-	assert.Nil(t, node)
+	assert.Nil(t, n)
 	assert.EqualError(t, err, fmt.Sprintf(invalidProjectStep, name, stepBuilderErr))
 
 	stepBuilder.AssertExpectations(t)
 }
 
 func TestProjectWithPathedDependency(t *testing.T) {
-	stepBuilder := new(mock.StepBuilder)
+	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
 
@@ -117,23 +117,23 @@ func TestProjectWithPathedDependency(t *testing.T) {
 		},
 	}
 
-	node, err := builder.FromConfig(name, cfg)
+	n, err := builder.FromConfig(name, cfg)
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, node)
-	assert.Equal(t, name, node.Name())
-	assert.Equal(t, name, node.Path())
+	assert.NotEmpty(t, n)
+	assert.Equal(t, name, n.Name())
+	assert.Equal(t, name, n.Path())
 
-	dependencies := node.Dependencies()
+	dependencies := n.Dependencies()
 	assert.Len(t, dependencies, 1)
-	assert.Equal(t, node2.PathedDependencyKind, dependencies[0].Kind())
+	assert.Equal(t, node.PathedDependencyKind, dependencies[0].Kind())
 	assert.Equal(t, name, dependencies[0].Value())
 
 	stepBuilder.AssertExpectations(t)
 }
 
 func TestProjectWithNamedDependency(t *testing.T) {
-	stepBuilder := new(mock.StepBuilder)
+	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
 
@@ -150,16 +150,16 @@ func TestProjectWithNamedDependency(t *testing.T) {
 		},
 	}
 
-	node, err := builder.FromConfig(name, cfg)
+	n, err := builder.FromConfig(name, cfg)
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, node)
-	assert.Equal(t, name, node.Name())
-	assert.Equal(t, name, node.Path())
+	assert.NotEmpty(t, n)
+	assert.Equal(t, name, n.Name())
+	assert.Equal(t, name, n.Path())
 
-	dependencies := node.Dependencies()
+	dependencies := n.Dependencies()
 	assert.Len(t, dependencies, 1)
-	assert.Equal(t, node2.NamedDependencyKind, dependencies[0].Kind())
+	assert.Equal(t, node.NamedDependencyKind, dependencies[0].Kind())
 	assert.Equal(t, name, dependencies[0].Value())
 
 	stepBuilder.AssertExpectations(t)

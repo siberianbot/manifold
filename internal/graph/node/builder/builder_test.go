@@ -4,7 +4,8 @@ import (
 	"errors"
 	"github.com/stretchr/testify/assert"
 	"manifold/internal/config"
-	"manifold/internal/mock"
+	mockConfig "manifold/internal/mock/config"
+	"manifold/internal/mock/node"
 	"testing"
 )
 
@@ -12,15 +13,15 @@ func TestWithValidProject(t *testing.T) {
 	path := "foo"
 	cfg := &config.Configuration{Project: &config.Project{}}
 
-	mockNode := new(mock.Node)
+	mockNode := new(node.Node)
 
-	configLoader := new(mock.ConfigLoader)
+	configLoader := new(mockConfig.ConfigLoader)
 	configLoader.On("FromPath", path).Return(cfg, nil)
 
-	projectNodeBuilder := new(mock.NodeBuilder)
+	projectNodeBuilder := new(node.ConcreteNodeBuilder)
 	projectNodeBuilder.On("FromConfig", path, cfg).Return(mockNode, nil)
 
-	workspaceNodeBuilder := new(mock.NodeBuilder)
+	workspaceNodeBuilder := new(node.ConcreteNodeBuilder)
 
 	builder := NewBuilder(configLoader, projectNodeBuilder, workspaceNodeBuilder)
 
@@ -41,14 +42,14 @@ func TestWithValidWorkspace(t *testing.T) {
 	path := "foo"
 	cfg := &config.Configuration{Workspace: &config.Workspace{}}
 
-	mockNode := new(mock.Node)
+	mockNode := new(node.Node)
 
-	configLoader := new(mock.ConfigLoader)
+	configLoader := new(mockConfig.ConfigLoader)
 	configLoader.On("FromPath", path).Return(cfg, nil)
 
-	projectNodeBuilder := new(mock.NodeBuilder)
+	projectNodeBuilder := new(node.ConcreteNodeBuilder)
 
-	workspaceNodeBuilder := new(mock.NodeBuilder)
+	workspaceNodeBuilder := new(node.ConcreteNodeBuilder)
 	workspaceNodeBuilder.On("FromConfig", path, cfg).Return(mockNode, nil)
 
 	builder := NewBuilder(configLoader, projectNodeBuilder, workspaceNodeBuilder)
@@ -71,19 +72,19 @@ func TestInvalidConfig(t *testing.T) {
 
 	cfgErr := errors.New("error")
 
-	configLoader := new(mock.ConfigLoader)
+	configLoader := new(mockConfig.ConfigLoader)
 	configLoader.On("FromPath", path).Return(nil, cfgErr)
 
-	projectNodeBuilder := new(mock.NodeBuilder)
-	workspaceNodeBuilder := new(mock.NodeBuilder)
+	projectNodeBuilder := new(node.ConcreteNodeBuilder)
+	workspaceNodeBuilder := new(node.ConcreteNodeBuilder)
 
 	builder := NewBuilder(configLoader, projectNodeBuilder, workspaceNodeBuilder)
 
 	assert.NotNil(t, builder)
 
-	node, err := builder.FromPath(path)
+	n, err := builder.FromPath(path)
 
-	assert.Nil(t, node)
+	assert.Nil(t, n)
 	assert.Error(t, cfgErr, err)
 
 	configLoader.AssertExpectations(t)
@@ -97,21 +98,21 @@ func TestFailedProjectBuilder(t *testing.T) {
 
 	builderErr := errors.New("error")
 
-	configLoader := new(mock.ConfigLoader)
+	configLoader := new(mockConfig.ConfigLoader)
 	configLoader.On("FromPath", path).Return(cfg, nil)
 
-	projectNodeBuilder := new(mock.NodeBuilder)
+	projectNodeBuilder := new(node.ConcreteNodeBuilder)
 	projectNodeBuilder.On("FromConfig", path, cfg).Return(nil, builderErr)
 
-	workspaceNodeBuilder := new(mock.NodeBuilder)
+	workspaceNodeBuilder := new(node.ConcreteNodeBuilder)
 
 	builder := NewBuilder(configLoader, projectNodeBuilder, workspaceNodeBuilder)
 
 	assert.NotNil(t, builder)
 
-	node, err := builder.FromPath(path)
+	n, err := builder.FromPath(path)
 
-	assert.Nil(t, node)
+	assert.Nil(t, n)
 	assert.Error(t, builderErr, err)
 
 	configLoader.AssertExpectations(t)
@@ -125,21 +126,21 @@ func TestFailedWorkspaceBuilder(t *testing.T) {
 
 	builderErr := errors.New("error")
 
-	configLoader := new(mock.ConfigLoader)
+	configLoader := new(mockConfig.ConfigLoader)
 	configLoader.On("FromPath", path).Return(cfg, nil)
 
-	projectNodeBuilder := new(mock.NodeBuilder)
+	projectNodeBuilder := new(node.ConcreteNodeBuilder)
 
-	workspaceNodeBuilder := new(mock.NodeBuilder)
+	workspaceNodeBuilder := new(node.ConcreteNodeBuilder)
 	workspaceNodeBuilder.On("FromConfig", path, cfg).Return(nil, builderErr)
 
 	builder := NewBuilder(configLoader, projectNodeBuilder, workspaceNodeBuilder)
 
 	assert.NotNil(t, builder)
 
-	node, err := builder.FromPath(path)
+	n, err := builder.FromPath(path)
 
-	assert.Nil(t, node)
+	assert.Nil(t, n)
 	assert.Error(t, builderErr, err)
 
 	configLoader.AssertExpectations(t)
