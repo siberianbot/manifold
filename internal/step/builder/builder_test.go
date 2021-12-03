@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"manifold/internal/config"
-	"manifold/internal/mock"
+	"manifold/internal/mock/step"
 	"testing"
 )
 
 func TestEmptyDefinition(t *testing.T) {
-	provider := new(mock.StepProvider)
+	provider := new(step.StepProvider)
 
 	definition := config.ProjectStep{}
 
@@ -25,7 +25,7 @@ func TestEmptyDefinition(t *testing.T) {
 }
 
 func TestUnknownDefinition(t *testing.T) {
-	provider := new(mock.StepProvider)
+	provider := new(step.StepProvider)
 	provider.On("FactoryFor", "foo").Return(nil)
 
 	builder := NewBuilder(provider)
@@ -46,12 +46,12 @@ func TestUnknownDefinition(t *testing.T) {
 
 func TestValidDefinition(t *testing.T) {
 	stepValue := struct{}{}
-	stepMock := new(mock.Step)
+	stepMock := new(step.Step)
 
-	factory := new(mock.StepFactory)
+	factory := new(step.StepFactory)
 	factory.On("CreateFrom", stepValue).Return(stepMock, nil)
 
-	provider := new(mock.StepProvider)
+	provider := new(step.StepProvider)
 	provider.On("FactoryFor", "foo").Return(factory)
 
 	builder := NewBuilder(provider)
@@ -75,10 +75,10 @@ func TestValidDefinition(t *testing.T) {
 func TestAmbiguousDefinition(t *testing.T) {
 	stepValue := struct{}{}
 
-	fooFactory := new(mock.StepFactory)
-	barFactory := new(mock.StepFactory)
+	fooFactory := new(step.StepFactory)
+	barFactory := new(step.StepFactory)
 
-	provider := new(mock.StepProvider)
+	provider := new(step.StepProvider)
 	provider.On("FactoryFor", "foo").Return(fooFactory)
 	provider.On("FactoryFor", "bar").Return(barFactory)
 
@@ -103,10 +103,10 @@ func TestFailedToCreate(t *testing.T) {
 	stepValue := struct{}{}
 
 	fooFactoryErr := errors.New("error")
-	fooFactory := new(mock.StepFactory)
+	fooFactory := new(step.StepFactory)
 	fooFactory.On("CreateFrom", stepValue).Return(nil, fooFactoryErr)
 
-	provider := new(mock.StepProvider)
+	provider := new(step.StepProvider)
 	provider.On("FactoryFor", "foo").Return(fooFactory)
 
 	builder := NewBuilder(provider)

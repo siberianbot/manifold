@@ -2,7 +2,7 @@ package provider
 
 import (
 	"github.com/stretchr/testify/assert"
-	"manifold/internal/mock"
+	mockStep "manifold/internal/mock/step"
 	"manifold/internal/step"
 	"testing"
 )
@@ -45,7 +45,7 @@ func TestExecutorNotExists(t *testing.T) {
 }
 
 func TestFactoryExists(t *testing.T) {
-	factory := new(mock.StepFactory)
+	factory := new(mockStep.StepFactory)
 	factoryName := "foo"
 
 	options := Options{
@@ -65,7 +65,7 @@ func TestFactoryExists(t *testing.T) {
 }
 
 func TestExecutorExists(t *testing.T) {
-	executor := new(mock.StepExecutor)
+	executor := new(mockStep.StepExecutor)
 	executorName := "foo"
 
 	options := Options{
