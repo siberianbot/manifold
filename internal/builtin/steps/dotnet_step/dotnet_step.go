@@ -4,13 +4,14 @@ import (
 	"io"
 	"log"
 	"manifold/internal/errors"
-	"manifold/internal/steps"
+	"manifold/internal/step"
+	"manifold/internal/step/provider"
 	"manifold/internal/utils"
 	"os/exec"
 )
 
 const (
-	Name = "dotnet"
+	name = "dotnet"
 )
 
 type dotnetStep struct {
@@ -18,15 +19,15 @@ type dotnetStep struct {
 }
 
 func (dotnetStep) Name() string {
-	return Name
+	return name
 }
 
 type dotnetProxy struct {
 	//
 }
 
-func (dotnetProxy) newStep(definition interface{}) (steps.Step, error) {
-	path, ok := definition.(string)
+func (dotnetProxy) CreateFrom(value interface{}) (step.Step, error) {
+	path, ok := value.(string)
 
 	if !ok || path == "" {
 		return nil, errors.NewError("dotnet step should be a valid path to project or solution file")
@@ -35,8 +36,8 @@ func (dotnetProxy) newStep(definition interface{}) (steps.Step, error) {
 	return &dotnetStep{path: path}, nil
 }
 
-func (dotnetProxy) executeStep(step steps.Step, context *steps.ExecutorContext) error {
-	targetPath := utils.BuildPath(context.Dir, step.(*dotnetStep).path)
+func (dotnetProxy) Execute(context step.ExecutorContext) error {
+	targetPath := utils.BuildPath(context.Dir(), context.Step().(*dotnetStep).path)
 	dotnetCmd := exec.Command("dotnet", "build", targetPath)
 
 	mw := io.MultiWriter(log.Writer())
@@ -46,8 +47,8 @@ func (dotnetProxy) executeStep(step steps.Step, context *steps.ExecutorContext) 
 	return dotnetCmd.Run()
 }
 
-func PopulateOptions(options *steps.ProviderOptions) {
+func PopulateOptions(options *provider.Options) {
 	proxy := new(dotnetProxy)
-	options.Factories[Name] = proxy.newStep
-	options.Executors[Name] = proxy.executeStep
+	options.Factories[name] = proxy
+	options.Executors[name] = proxy
 }

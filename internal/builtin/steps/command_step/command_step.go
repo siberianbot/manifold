@@ -5,13 +5,14 @@ import (
 	"io"
 	"log"
 	"manifold/internal/errors"
-	"manifold/internal/steps"
+	"manifold/internal/step"
+	"manifold/internal/step/provider"
 	"os/exec"
 )
 
 const (
-	Name          = "cmd"
-	StepIsInvalid = "definition should be a non-empty string"
+	name          = "cmd"
+	stepIsInvalid = "definition should be a non-empty string"
 )
 
 type commandStep struct {
@@ -19,13 +20,29 @@ type commandStep struct {
 }
 
 func (commandStep) Name() string {
-	return Name
+	return name
 }
 
-func executeStep(step steps.Step, _ *steps.ExecutorContext) error {
-	cmdArgs, _ := shlex.Split(step.(*commandStep).cmd)
+type commandProxy struct {
+	//
+}
+
+func (commandProxy) CreateFrom(value interface{}) (step.Step, error) {
+	cmd, ok := value.(string)
+
+	if !ok || cmd == "" {
+		return nil, errors.NewError(stepIsInvalid)
+	}
+
+	return &commandStep{cmd: cmd}, nil
+}
+
+func (commandProxy) Execute(context step.ExecutorContext) error {
+	cmdArgs, _ := shlex.Split(context.Step().(*commandStep).cmd)
 
 	cmd := exec.Command(cmdArgs[0])
+
+	cmd.Dir = context.Dir()
 
 	if len(cmdArgs) > 1 {
 		cmd.Args = append(cmd.Args, cmdArgs[1:]...)
@@ -38,20 +55,8 @@ func executeStep(step steps.Step, _ *steps.ExecutorContext) error {
 	return cmd.Run()
 }
 
-func newStep(definition interface{}) (steps.Step, error) {
-	cmd, ok := definition.(string)
-
-	if !ok || cmd == "" {
-		return nil, errors.NewError(StepIsInvalid)
-	}
-
-	step := new(commandStep)
-	step.cmd = cmd
-
-	return step, nil
-}
-
-func PopulateOptions(options *steps.ProviderOptions) {
-	options.Factories[Name] = newStep
-	options.Executors[Name] = executeStep
+func PopulateOptions(options *provider.Options) {
+	proxy := new(commandProxy)
+	options.Factories[name] = proxy
+	options.Executors[name] = proxy
 }
