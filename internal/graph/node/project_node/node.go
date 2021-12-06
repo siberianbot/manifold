@@ -24,3 +24,7 @@ func (n *Node) Path() string {
 func (n *Node) Dependencies() []node.Dependency {
 	return n.dependencies
 }
+
+func (n *Node) Steps() []step.Step {
+	return n.steps
+}

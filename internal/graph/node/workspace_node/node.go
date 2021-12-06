@@ -3,6 +3,7 @@ package workspace_node
 import (
 	"manifold/internal/config"
 	"manifold/internal/graph/node"
+	"manifold/internal/step"
 )
 
 type Node struct {
@@ -21,4 +22,8 @@ func (n *Node) Path() string {
 
 func (n *Node) Dependencies() []node.Dependency {
 	return n.includes
+}
+
+func (n *Node) Steps() []step.Step {
+	return make([]step.Step, 0)
 }

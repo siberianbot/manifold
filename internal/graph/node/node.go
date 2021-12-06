@@ -1,11 +1,15 @@
 package node
 
-import "manifold/internal/config"
+import (
+	"manifold/internal/config"
+	"manifold/internal/step"
+)
 
 type Node interface {
 	Name() string
 	Path() string
 	Dependencies() []Dependency
+	Steps() []step.Step
 }
 
 type Builder interface {

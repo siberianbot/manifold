@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"manifold/internal/config"
 	"manifold/internal/graph/node"
+	"manifold/internal/step"
 )
 
 type Node struct {
@@ -20,6 +21,10 @@ func (m *Node) Path() string {
 
 func (m *Node) Dependencies() []node.Dependency {
 	return m.Called().Get(0).([]node.Dependency)
+}
+
+func (m *Node) Steps() []step.Step {
+	return m.Called().Get(0).([]step.Step)
 }
 
 type Dependency struct {
