@@ -24,12 +24,22 @@ func NewDepthFirstBuildStrategy(stepProvider stepProvider.Interface) build.Inter
 }
 
 func (b *depthFirstBuild) Build(g graph.Interface) error {
-	return b.build(g.Root(), g)
+	buildContext := &buildContext{graph: g, built: make(map[node.Node]bool)}
+
+	for _, n := range g.Nodes() {
+		buildContext.built[n] = false
+	}
+
+	return b.build(g.Root(), buildContext)
 }
 
-func (b *depthFirstBuild) build(n node.Node, g graph.Interface) error {
-	for _, desc := range g.DescendantsOf(n) {
-		err := b.build(desc, g)
+func (b *depthFirstBuild) build(n node.Node, buildCtx *buildContext) error {
+	if buildCtx.built[n] {
+		return nil
+	}
+
+	for _, desc := range buildCtx.graph.DescendantsOf(n) {
+		err := b.build(desc, buildCtx)
 
 		if err != nil {
 			return err
@@ -55,7 +65,14 @@ func (b *depthFirstBuild) build(n node.Node, g graph.Interface) error {
 		}
 	}
 
+	buildCtx.built[n] = true
+
 	return nil
+}
+
+type buildContext struct {
+	built map[node.Node]bool
+	graph graph.Interface
 }
 
 type executorContext struct {
