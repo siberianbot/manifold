@@ -9,7 +9,7 @@ import (
 )
 
 type buildCommand struct {
-	backend backend.Backend
+	backend backend.Interface
 }
 
 func (cmd *buildCommand) Help() string {
@@ -48,6 +48,6 @@ func (cmd *buildCommand) Run(args []string) int {
 	return 0
 }
 
-func buildCommandFactory(b backend.Backend) (cli.Command, error) {
+func buildCommandFactory(b backend.Interface) (cli.Command, error) {
 	return &buildCommand{backend: b}, nil
 }
