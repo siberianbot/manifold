@@ -7,6 +7,8 @@ import (
 	"manifold/internal/config"
 	"manifold/internal/graph/node"
 	"manifold/internal/mock/step"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -99,7 +101,45 @@ func TestProjectWithInvalidStep(t *testing.T) {
 	stepBuilder.AssertExpectations(t)
 }
 
-func TestProjectWithPathedDependency(t *testing.T) {
+func TestProjectWithValidPathedDependency(t *testing.T) {
+	stepBuilder := new(step.StepBuilder)
+
+	builder := NewBuilder(stepBuilder)
+
+	assert.NotEmpty(t, builder)
+
+	depDir := t.TempDir()
+	depPath := filepath.Join(depDir, ".manifold.yml")
+	file, _ := os.Create(depPath)
+	_ = file.Close()
+
+	name := "foo"
+	cfg := &config.Configuration{
+		Project: &config.Project{
+			Name:  name,
+			Steps: []config.ProjectStep{},
+			Dependencies: []config.ProjectDependency{
+				{Path: depDir, Project: ""},
+			},
+		},
+	}
+
+	n, err := builder.FromConfig(name, cfg)
+
+	assert.NoError(t, err)
+	assert.NotEmpty(t, n)
+	assert.Equal(t, name, n.Name())
+	assert.Equal(t, name, n.Path())
+
+	dependencies := n.Dependencies()
+	assert.Len(t, dependencies, 1)
+	assert.Equal(t, node.PathedDependencyKind, dependencies[0].Kind())
+	assert.Equal(t, depPath, dependencies[0].Value())
+
+	stepBuilder.AssertExpectations(t)
+}
+
+func TestProjectWithInvalidPathedDependency(t *testing.T) {
 	stepBuilder := new(step.StepBuilder)
 
 	builder := NewBuilder(stepBuilder)
@@ -119,15 +159,8 @@ func TestProjectWithPathedDependency(t *testing.T) {
 
 	n, err := builder.FromConfig(name, cfg)
 
-	assert.NoError(t, err)
-	assert.NotEmpty(t, n)
-	assert.Equal(t, name, n.Name())
-	assert.Equal(t, name, n.Path())
-
-	dependencies := n.Dependencies()
-	assert.Len(t, dependencies, 1)
-	assert.Equal(t, node.PathedDependencyKind, dependencies[0].Kind())
-	assert.Equal(t, name, dependencies[0].Value())
+	assert.Error(t, err)
+	assert.Nil(t, n)
 
 	stepBuilder.AssertExpectations(t)
 }

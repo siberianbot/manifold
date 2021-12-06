@@ -2,14 +2,18 @@ package project_node
 
 import (
 	"manifold/internal/config"
+	configUtils "manifold/internal/config/utils"
 	"manifold/internal/errors"
 	"manifold/internal/graph/node"
 	"manifold/internal/step"
 	stepBuilder "manifold/internal/step/builder"
+	"manifold/internal/utils"
+	"path/filepath"
 )
 
 const (
-	invalidProjectStep = "project \"%s\" contain invalid step: %v"
+	invalidProjectStep       = "project \"%s\" contain invalid step: %v"
+	invalidProjectDependency = "project \"%s\" contain invalid dependency \"%s\": %v"
 )
 
 type builder struct {
@@ -38,6 +42,8 @@ func (b *builder) FromConfig(path string, cfg *config.Configuration) (node.Node,
 		projectNode.steps[idx] = s
 	}
 
+	dir := filepath.Dir(path)
+
 	for idx, projectDependency := range cfg.Project.Dependencies {
 		var kind node.DependencyKind
 		var value string
@@ -47,7 +53,14 @@ func (b *builder) FromConfig(path string, cfg *config.Configuration) (node.Node,
 			kind, value = node.NamedDependencyKind, projectDependency.Project
 
 		case projectDependency.Path != "":
-			kind, value = node.PathedDependencyKind, projectDependency.Path
+			depPath := utils.BuildPath(dir, projectDependency.Path)
+			resolvedPath, err := configUtils.ResolvePath(depPath)
+
+			if err != nil {
+				return nil, errors.NewError(invalidProjectDependency, cfg.Project.Name, projectDependency.Path, err)
+			}
+
+			kind, value = node.PathedDependencyKind, resolvedPath
 
 		default:
 			panic("project dependency is invalid")
